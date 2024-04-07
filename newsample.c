@@ -6,7 +6,7 @@
 #include <string.h>
 
 // Default order
-#define ORDER 10
+#define ORDER 3
 
 typedef struct record {
   	char* name;
@@ -212,6 +212,7 @@ void findAndPrintRange(node *const root, int key_start, int key_end,
   void *returned_pointers[array_size];
   int num_found = findRange(root, key_start, key_end, verbose,
                 returned_keys, returned_pointers);
+              printf("Num_found: %d\n", num_found);
   if (!num_found)
     printf("None found.\n");
   else {
@@ -241,7 +242,10 @@ int findRange(node *const root, int key_start, int key_end, bool verbose,
       returned_pointers[num_found] = n->pointers[i];
       num_found++;
     }
-    n = n->pointers[order - 1];
+    
+    n = n->next;
+    if(!n) printf("getting NULL here\n");
+   // printf("bp:%d\n",n->keys[0]);	
     i = 0;
   }
   return num_found;
@@ -454,8 +458,8 @@ node *insertIntoLeafAfterSplitting(node *root, node *leaf, int key, record *reco
         perror("Record creation.");
         exit(EXIT_FAILURE);
     }
-    printf("inside the insert into leaf function for the next 2 lines\n");
-	printf("%s\n", record_pointer->name);
+   // printf("inside the insert into leaf function for the next 2 lines\n");
+	//printf("%s\n", record_pointer->name);
     // Copy the data to the new record
 
     memcpy((record*)temp_pointers[insertion_index], record_pointer, sizeof(record));
@@ -481,12 +485,14 @@ node *insertIntoLeafAfterSplitting(node *root, node *leaf, int key, record *reco
     // Update parent pointers
     new_leaf->parent = leaf->parent;
     new_key = new_leaf->keys[0];
-
+        leaf->next = new_leaf;
+	
     free(temp_pointers);
     free(temp_keys);
 
     return insertIntoParent(root, leaf, new_key, new_leaf);
 }
+
 
 node *insertIntoNode(node *root, node *n,
            int left_index, int key, node *right) {
@@ -595,6 +601,7 @@ node *startNewTree(int key, record *pointer) {
   root->pointers[0] = pointer;
   root->pointers[order - 1] = NULL;
   root->parent = NULL;
+  root->next=NULL;
   root->num_keys++;
   return root;
 }
@@ -635,8 +642,63 @@ if (record_pointer != NULL) {
 	
     return insertIntoLeafAfterSplitting(root, leaf, key, record_pointer);
 }
+void writeLeafNodesExcludingRecord(node *node, FILE *file, int keyToExclude) {
+    if (node == NULL) {
+        return ;
+    }
 
+    if (node->is_leaf) {
+        // Write data from leaf node to file, excluding the specified key
+        for (int i = 0; i < node->num_keys; i++) {
+            if (node->keys[i] != keyToExclude) {
+                fprintf(file, "%d,%s,%s,%s,%s,%s,%s,%s,%s,%s\n", node->keys[i], ((record *)node->pointers[i])->name,((record *)node->pointers[i])->mobile, ((record *)node->pointers[i])->address, ((record *)node->pointers[i])->email, ((record *)node->pointers[i])->skills, ((record *)node->pointers[i])->experience,((record *)node->pointers[i])->projects_num, ((record *)node->pointers[i])->unique,((record *)node->pointers[i])->job_role);
+            }
+        }
+    } else {
+        // Recursively traverse child nodes
+        for (int i = 0; i < node->num_keys + 1; i++) {
+            writeLeafNodesExcludingRecord(node->pointers[i], file, keyToExclude);
+        }
+    }
+    return;
+}
+
+node* writeToFileExcludingRecord(node *root, const char *filename, int keyToExclude) {
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        perror("Error opening file for writing.");
+        return NULL;
+    }
+
+    // Traverse the B+ tree and write each key-value pair to the file, excluding the specified key
+    writeLeafNodesExcludingRecord(root, file, keyToExclude);
+
+    fclose(file);
+    return root;
+}
+//void destroy(node* root){
+void destroyTree(node *root) {
+    if (root == NULL) {
+        return;
+    }
+
+    if (!root->is_leaf) {
+        for (int i = 0; i <= root->num_keys; i++) {
+            destroyTree(root->pointers[i]);
+        }
+    }
+
+    for (int i = 0; i < root->num_keys; i++) {
+        free(root->pointers[i]); // Free memory allocated for records in leaf nodes
+    }
+
+    free(root->keys);
+    free(root->pointers);
+    free(root);
+}
+	
 int main() {
+	char filename[] = "data.txt";
     FILE *file = fopen("data.txt", "a+");
     if (file == NULL) {
         perror("Error opening file.");
@@ -661,10 +723,11 @@ int main() {
     printf("1. Insert\n");
     printf("2. Display\n");
     printf("3. Display range\n");
+    printf("4. Delete key\n");
     printf("Enter your choice: ");
     scanf("%d", &choice);
 
-    while (choice <= 3) {
+    while (choice <= 4) {
         switch (choice) {
             case 1:
               /*  printf("Enter key: ");
@@ -702,9 +765,32 @@ int main() {
             	scanf("%d %d", &start, &end);
             	findAndPrintRange(root, start, end, 'a');
             	break;
-      
-        }
+            case 4: printf("enter key to be deleted:");
+            		scanf("%d", &key);
+            		root=writeToFileExcludingRecord(root, filename, key);
+            		destroyTree(root);
+            		file = fopen("data.txt", "a+");
+            		if (file == NULL) {
+        perror("Error opening file.");
+        return 1;
+    }
 
+    node *root = NULL;
+    int key;
+    char name[100], mobile[100], address[100], email[100], skills[100], experience[100], projects_num[100], unique[100], job_role[100];
+    char line[1000]; // Adjust the size according to your needs
+
+    // Read the file and build the binary search tree
+    while (fgets(line, sizeof(line), file) != NULL) {
+        sscanf(line, "%d,%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^\n]",
+               &key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
+        root = insert(root, key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
+    }
+
+    fclose(file);
+      
+	break;
+        }
         printf("Enter your choice: ");
         scanf("%d", &choice);
     }
