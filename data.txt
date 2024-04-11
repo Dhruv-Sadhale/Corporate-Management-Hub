@@ -42,3 +42,7 @@
 148,Ella Diaz,7778889999,258 Walnut St, ella.diaz@example.com,cpp_java_csharp,14years_senior_dev,11,148,Senior Developer
 149,Dylan Richardson,5554443333,369 Birch St, dylan.richardson@example.com,html_css_javascript,8years_designer,8,149,Designer
 150,Sophie Ortiz,9990001111,753 Cedar St, sophie.ortiz@example.com,java_python_csharp,16years_lead_dev,13,150,Lead Developer
+160,a,1,a,a,a,a,1,160,CEO
+160,a,1,a,a,a,a,1,160,Senior Software Engineer
+160,a,1,a,a,a,a,1,160,Senior Software Engineer
+190,a,2,a,a,a,a,2,190,ceo

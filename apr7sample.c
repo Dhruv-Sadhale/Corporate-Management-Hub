@@ -1,32 +1,18 @@
-	// Searching on a B+ Tree in C
+// Searching on a B+ Tree in C
 
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h> 
+
 // Default order
-#define ORDER 512
+#define ORDER 3
 
 typedef struct record {
-  	char* name;
-	char* mobile;
-	char* address;
-	char* email;
-	char* skills;
-	char* experience;
-	char* projects_num;
-	char* unique;
-	char* job_role;
+  
+  char* name
 } record;
-typedef struct tokens{
-	int operation;
-	int assist;
-	int condition;
-	int field;
-	int table;
-	int star;
-}tokens;
+
 // Node
 typedef struct node {
   void **pointers;
@@ -58,7 +44,7 @@ node *findLeaf(node *const root, int key, bool verbose);
 record *find(node *root, int key, bool verbose, node **leaf_out);
 int cut(int length);
 
-record *makeRecord(char* name,char* mobile,char* address,char* email,char* skills,char* experience,char* projects_num,char* unique,char* job_role);//updated
+record *makeRecord(char* value);
 node *makeNode(void);
 node *makeLeaf(void);
 int getLeftIndex(node *parent, node *left);
@@ -73,7 +59,7 @@ node *insertIntoNodeAfterSplitting(node *root, node *parent,
 node *insertIntoParent(node *root, node *left, int key, node *right);
 node *insertIntoNewRoot(node *left, int key, node *right);
 node *startNewTree(int key, record *pointer);
-node *insert(node *root, int key,char* name,char* mobile,char* address,char* email,char* skills,char* experience,char* projects_num,char* unique,char* job_role);
+node *insert(node *root, int key,char* name);
 
 // Enqueue
 void enqueue(node *new_node) {
@@ -198,9 +184,8 @@ void findAndPrint(node *const root, int key, bool verbose) {
   if (r == NULL)
     printf("Record not found under key %d.\n", key);
   else
-    printf("Record at %p -- key %d,\nname:%s\nmobile:%s\naddress:%s\nemail:%s\nskills:%s\nexperience:%s\nprojects_num:%s\nunique:%s\njob_role:%s\n",
-         r, key, r->name,r->mobile, r->address, r->email, r->skills, r->experience,r->projects_num, r->unique,r->job_role);
-         
+    printf("Record at %p -- key %d, name %s.\n",
+         r, key, r->name);
 }
 
 // Find and print the range
@@ -216,10 +201,12 @@ void findAndPrintRange(node *const root, int key_start, int key_end,
     printf("None found.\n");
   else {
     for (i = 0; i < num_found; i++)
-      printf("Key: %d   Location: %p\n%s   %s   %s   %s  %s   %s   %s   %s   %s\n",
+      printf("Key: %d   Location: %p  name: %s\n",
            returned_keys[i],
            returned_pointers[i],
-           ((record *)returned_pointers[i])->name,((record *)returned_pointers[i])->mobile,((record *)returned_pointers[i])->address,((record *)returned_pointers[i])->email,((record *)returned_pointers[i])->skills,((record *)returned_pointers[i])->experience,((record *)returned_pointers[i])->projects_num,((record *)returned_pointers[i])->unique,((record *)returned_pointers[i])->job_role);
+           ((record *)
+            returned_pointers[i])
+             ->name);
   }
 }
 
@@ -257,12 +244,12 @@ node *findLeaf(node *const root, int key, bool verbose) {
   int i = 0;
   node *c = root;
   while (!c->is_leaf) {
-    /*if (verbose) {
+    if (verbose) {
       printf("[");
       for (i = 0; i < c->num_keys - 1; i++)
         printf("%d ", c->keys[i]);
       printf("%d] ", c->keys[i]);
-    }*/
+    }
     i = 0;
     while (i < c->num_keys) {
       if (key >= c->keys[i])
@@ -270,16 +257,16 @@ node *findLeaf(node *const root, int key, bool verbose) {
       else
         break;
     }
-    /*if (verbose)
-      printf("%d ->\n", i);*/
+    if (verbose)
+      printf("%d ->\n", i);
     c = (node *)c->pointers[i];
   }
- /*if (verbose) {
+  if (verbose) {
     printf("Leaf [");
     for (i = 0; i < c->num_keys - 1; i++)
       printf("%d ", c->keys[i]);
     printf("%d] ->\n", c->keys[i]);
-  }*/
+  }
   return c;
 }
 
@@ -315,23 +302,15 @@ int cut(int length) {
     return length / 2 + 1;
 }
 
-record *makeRecord(char* name,char* mobile,char* address,char* email,char* skills,char* experience,char* projects_num,char* unique,char* job_role) {
-  record *record_pointer = (record *)malloc(sizeof(record));
-  if (record_pointer == NULL) {
+record *makeRecord(char* name) {
+  record *new_record = (record *)malloc(sizeof(record));
+  if (new_record == NULL) {
     perror("Record creation.");
     exit(EXIT_FAILURE);
   } else {
-    record_pointer->name = name;
-    record_pointer->mobile = mobile;
-    record_pointer->address = address;
-    record_pointer->email = email;
-    record_pointer->skills = skills;
-    record_pointer->experience = experience;
-    record_pointer->projects_num = projects_num;
-    record_pointer->unique = unique;
-    record_pointer->job_role = job_role;
+    new_record->name = name;
   }
-  return record_pointer;
+  return new_record;
 }
 
 node *makeNode(void) {
@@ -567,30 +546,21 @@ node *startNewTree(int key, record *pointer) {
   return root;
 }
 
-node *insert(node *root, int key,char* name,char* mobile,char* address,char* email,char* skills,char* experience,char* projects_num,char* unique,char* job_role) {
+node *insert(node *root, int key, int value) {
   record *record_pointer = NULL;
   node *leaf = NULL;
 
   record_pointer = find(root, key, false, NULL);
   if (record_pointer != NULL) {
-    record_pointer->name = name;
-    record_pointer->mobile = mobile;
-    record_pointer->address = address;
-    record_pointer->email = email;
-    record_pointer->skills = skills;
-    record_pointer->experience = experience;
-    record_pointer->projects_num = projects_num;
-    record_pointer->unique = unique;
-    record_pointer->job_role = job_role;
-
+    record_pointer->value = value;
     return root;
   }
 
-  record_pointer = makeRecord(name, mobile, address, email, skills, experience, projects_num, unique, job_role);
-//printf("Inside insert function: %d %s %s %s %s %s %s %s %s %s\n",key,record_pointer->name,record_pointer->mobile,record_pointer->address,record_pointer->email,record_pointer->skills,record_pointer->experience,record_pointer->projects_num,record_pointer->unique,record_pointer->job_role);
+  record_pointer = makeRecord(value);
+
   if (root == NULL)
     return startNewTree(key, record_pointer);
-	
+
   leaf = findLeaf(root, key, false);
 
   if (leaf->num_keys < order - 1) {
@@ -600,285 +570,71 @@ node *insert(node *root, int key,char* name,char* mobile,char* address,char* ema
 
   return insertIntoLeafAfterSplitting(root, leaf, key, record_pointer);
 }
-void  writeToFile(node *root, const char *filename) {
-    FILE *file = fopen(filename, "w");
-    if (file == NULL) {
-        perror("Error opening file for writing.");
-        return ;
-    }
-
-    // Traverse the B+ tree and write each key-value pair to the file
-    node *leaf = root;
-    while (!leaf->is_leaf) {
-        leaf = (node *)leaf->pointers[0];
-    }
-    printf("bp1\n");
-
-    while (leaf != NULL) {
-    printf("bp2\n");
-        for (int i = 0; i < leaf->num_keys; i++) {
-            printf("bp3\n");
-            record *r= (record *)leaf->pointers[i];
-            fprintf(file, "%d %s %s %s %s %s %s %s %s %s\n", leaf->keys[i],r->name,r->mobile, r->address, r->email, r->skills, r->experience,r->projects_num, r->unique,r->job_role);
-        }
-        printf("bp4\n");
-       leaf = leaf->pointers[order - 1];
-      //  leaf=leaf->next;
-    }
-
-    fclose(file);
-    return ;
-}
-void writeLeafNodesExcludingRecord(node *node, FILE *file, int keyToExclude) {
-    if (node == NULL) {
-        return;
-    }
-
-    if (node->is_leaf) {
-        // Write data from leaf node to file, excluding the specified key
-        for (int i = 0; i < node->num_keys; i++) {
-            if (node->keys[i] != keyToExclude) {
-                fprintf(file, "%d,%s,%s,%s,%s,%s,%s,%s,%s,%s\n", node->keys[i], ((record *)node->pointers[i])->name,((record *)node->pointers[i])->mobile, ((record *)node->pointers[i])->address, ((record *)node->pointers[i])->email, ((record *)node->pointers[i])->skills, ((record *)node->pointers[i])->experience,((record *)node->pointers[i])->projects_num, ((record *)node->pointers[i])->unique,((record *)node->pointers[i])->job_role);
-            }
-        }
-    } else {
-        // Recursively traverse child nodes
-        for (int i = 0; i < node->num_keys + 1; i++) {
-            writeLeafNodesExcludingRecord(node->pointers[i], file, keyToExclude);
-        }
-    }
-}
-
-void writeToFileExcludingRecord(node *root, const char *filename, int keyToExclude) {
-    FILE *file = fopen(filename, "w");
-    if (file == NULL) {
-        perror("Error opening file for writing.");
-        return;
-    }
-
-    // Traverse the B+ tree and write each key-value pair to the file, excluding the specified key
-    writeLeafNodesExcludingRecord(root, file, keyToExclude);
-
-    fclose(file);
-}
-//void operation_selection(node* root, const char* filename){
-	
-
-void sql(){
-	node *root=NULL;
-  char instruction;
-	char filename[] = "data.txt";
-    FILE *file = fopen(filename, "ra");
-    if (file == NULL) {
-        perror("Error opening file.");
-        return;
-    }
-
-    int key;
-    char* name;
-    char* mobile;
-    char* address;
-    char* email;
-    char* skills;
-    char* experience;
-    char* projects_num;
-    char* unique;
-    char* job_role;
-        
-    name=malloc(sizeof(char)*255);
-    mobile = malloc(sizeof(char) * 20);
-    address = malloc(sizeof(char) * 255);
-    email = malloc(sizeof(char) * 100);
-    skills = malloc(sizeof(char) * 255);
-    experience = malloc(sizeof(char) * 255);
-    projects_num = malloc(sizeof(char) * 20);
-    unique = malloc(sizeof(char) * 20);
-    job_role = malloc(sizeof(char) * 100);
-          //  printf("hello?\n");
-    while (fscanf(file, "%d %s %s %s %s %s %s %s %s %s", &key, name, mobile, address, email, skills, experience, projects_num, unique, job_role)==10) {
-       	 printf("hello?\n");
-        //printf("inside main%d %s %s %s %s %s %s %s %s %s\n", key,name, mobile, address, email, skills, experience, projects_num, unique, job_role);
-        root = insert(root, key,name, mobile, address, email, skills, experience, projects_num, unique, job_role);
-       //	printf("is root a leaf?%d\n",root->is_leaf);
-        //findAndPrint(root, key, instruction = 'a');
-          // Assuming key is both value and key
-    }
-    int loop=1;
-    while(loop){
-    
-    char* query;
-    int c;
-
-    printf("Enter query:\n");
-    query=(char*)malloc(sizeof(char)*200);
-    int k=0;
-    
-    while((c=getchar())!=';'){
-    	query[k++]=c;
-    	}
-    	query[k]='\0';
-
-    
-
-
-    
-	tokens* t=(tokens*)malloc(sizeof(tokens));
-	t->operation=0;
-	t->assist=0;
-	t->condition=0;
-	t->field=0;
-	t->star=0;
-	t->table=0;
-	char *token = strtok(query, " ,;=()");
-	
-	
-	
-    while (token != NULL) {
- 
-        if(strcmp(token,"select")==0){
-        	t->operation=1;
-        }
-        else if(strcmp(token,"from")==0){
-        	t->assist=2;
-        }
-        else if(strcmp(token,"insert")==0){
-        	t->operation=3;
-        }
-        else if(strcmp(token,"into")==0){
-        	t->assist=4;
-        }
-        else if(strcmp(token,"values")==0){
-        	t->condition=5;
-        }
-        else if(strcmp(token,"UPDATE")==0){
-        	t->operation=6;
-        }
-        else if(strcmp(token,"SET")==0){
-        	t->assist=7;
-        }
-        else if(strcmp(token,"delete")==0){
-        	t->operation=8;
-        }
-        else if(strcmp(token,"where")==0){
-        	t->condition=9;
-        }
-        else if(strcmp(token,"name")==0){
-        	t->field=10;
-        }
-        else if(strcmp(token,"mobile")==0){
-        	t->field=11;
-        }
-        else if(strcmp(token,"address")==0){
-        	t->field=12;
-        }
-        else if(strcmp(token,"email")==0){
-        	t->field=13;
-        }
-        else if(strcmp(token,"skills")==0){
-        	t->field=14;
-        }
-        else if(strcmp(token,"experience")==0){
-        	t->field=15;
-        }
-        else if(strcmp(token,"projects_num")==0){
-        	t->field=16;
-        }
-        else if(strcmp(token,"unique")==0){
-        	t->field=17;
-        }
-        else if(strcmp(token,"job_role")==0){
-        	t->field=18;
-        }
-        else if(strcmp(token,"*")==0){
-        	t->star=1;
-        }
-        else if(strcmp(token,"applicants")==0){
-        	t->table=20;
-        }
-        else if(strcmp(token,"employees")==0){
-        	t->table=21;
-        }
-
-        
-        if(t->operation==1 && t->star==1 && t->assist==2 && (t->table==20 ||t->table==21) && t->condition==9 &&
-        	t->field>=10 && t->field<=18){// SELECT * FROM tablename WHERE <field> = <value> ;
-        	token = strtok(NULL, " ,;=()");
-        	//findAndPrintRange(root,100,102 , instruction='a');
-        	//writeToFile(root, filename);
-        	//printf("Inside the select logic:is root leaf,%d",root->is_leaf);
-        	//printf("TOKEN:%s\n",(token));
-        	findAndPrint(root, atoi(token), instruction = 'a');
-        	break;
-        }
-        else if(t->operation==3 && t->star==0 && t->assist==4 && (t->table==20 ||t->table==21) && t->condition==5 ){ //INSERT INTO tablename VALUES (...allValues);
-        	
-    
-        	char* iname= strtok(NULL, " ,;=()");
-        	char* imobile = strtok(NULL, " ,;=()");
-        	char* iaddress = strtok(NULL, " ,;=()");	
-        	char* iemail = strtok(NULL, " ,;=()");
-        	char* iskills= strtok(NULL, " ,;=()");
-        	char* iexperience = strtok(NULL, " ,;=()");
-        	char* iprojects_num = strtok(NULL, " ,;=()");
-        	char* iunique= strtok(NULL, " ,;=()");
-        	char* ijob_role = strtok(NULL, " ,;=()");
-        	//printf("%d %s %s %s %s %s %s %s %s %s\n",atoi(unique),name, mobile, address, email, skills, experience, projects_num, unique, job_role); 
-        	root=insert(root,atoi(iunique),iname, imobile, iaddress, iemail, iskills, iexperience, iprojects_num, iunique, ijob_role); 
-        	
-        	findAndPrint(root, atoi(iunique), instruction = 'a');
-        	writeToFile(root, filename);
-        	//fprintf(file,"%d %s %s %s %s %s %s %s %s %s\n",atoi(iunique),iname, imobile, iaddress, iemail, iskills, iexperience, iprojects_num, iunique, ijob_role); 
-        	
-        	//function 
-        	break;
-        }
-       	else if(t->operation==8 && t->star==0 && t->assist==2 && (t->table==20 ||t->table==21) && t->condition==9 &&
-        	t->field>=10 && t->field<=18){// DELETE FROM tablename WHERE <field>= <value>;
-        	token = strtok(NULL, " ,;=()");
-        	//function 
-        	writeToFileExcludingRecord(root, filename, atoi(token));
-        	break;
-        }
-        token = strtok(NULL, " ,;=()");
-    }
-    free(t);
-    //fclose(file);
-    
-    
-        
-	free(query);
-	loop++;
-   }
-fclose(file);
-    
-    free(root);	
-    free(name);
-    free(address);
-    free(mobile);
-    free(email);
-    free(skills);
-    free(experience);
-    free(projects_num);
-    free(unique);
-    free(job_role);
-    
-    return ;
-   }
 
 int main() {
-  sql();
+    FILE *file = fopen("data.txt", "a+");
+    if (file == NULL) {
+        perror("Error opening file.");
+        return 1;
+    }
 
-//  printTree(root);
- /* clock_t t; 
-    t = clock(); 
-  findAndPrint(root, 999, instruction = 'a');
-   t = clock() - t; 
-    double time_taken = ((double)t)/CLOCKS_PER_SEC; 
- 
-    printf("fun() took %f seconds to execute \n", time_taken); */
+    node *root = NULL;
+    int key;
+    	int value;
+    char line[1000]; // Adjust the size according to your needs
 
-  // writeToFileExcludingRecord(root, filename, 3);
-   //writeToFile(root, filename);
+    // Read the file and build the binary search tree
+    while (fgets(line, sizeof(line), file) != NULL) {
+        sscanf(line, "%d,%d\n",
+               &key,&value);
+        root = insert(root, key, value);
+    }
+
+    fclose(file);
+
+    int choice;
+    printf("1. Insert\n");
+    printf("2. Display\n");
+    printf("3. Display range\n");
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+
+    while (choice <= 2) {
+        switch (choice) {
+            case 1:
+              /*  printf("Enter key: ");
+                scanf("%d", &key);*/
+                printf("Enter key and value:\n");
+                scanf("%d %d", &key, &value);
+                file = fopen("data.txt", "a+");
+                if (file == NULL) {
+                    perror("Error opening file.");
+                    return 1;
+                }
+              fprintf(file, "%d,%d\n",
+                        key, value);
+                fclose(file);
+		        root = insert(root, key, value);
+                findAndPrint(root, key, 'a');
+                break;
+
+            case 2:
+                printf("Select key to be displayed: ");
+                scanf("%d", &key);
+                record *record_pointer = NULL;
    
-   return 0;
+
+    		record_pointer = find(root, key, false, NULL);
+    		if (record_pointer != NULL) {
+    		printf("%d\n", record_pointer->value);
+        	}
+                findAndPrint(root, key, 'a');
+                break;
+        }
+
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+    }
+
+    return 0;
 }
