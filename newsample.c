@@ -6,7 +6,7 @@
 #include <string.h>
 #include <string.h>
 #include <stdbool.h>
-#define SIZE 52
+#define SIZE 53
 #define NumSkills 
 
 // Default order
@@ -43,17 +43,6 @@ typedef struct rolenode{
 	struct rolenode *next;
 }rolenode;
 typedef struct roles{
-	/*record* cto;
-	record* ceo;
-	record* vp_of_engineering;
-	record* technical_lead;
-	record* chief_architect;
-	record* principal_software_engineer;
-	record* senior_software_engineer;
-	record* vp_of_marketing;
-	record* product_manager;
-	record* hr_director;
-	record* recruiting_director;*/
 	rolenode **vertices;
 	int* roleid;
 	int* max;
@@ -309,7 +298,7 @@ void findAndPrint(node *const root, int key, bool verbose)
     if (r == NULL)
         printf("Record not found under key %d.\n", key);
     else
-        printf("Key: %d   Location: %p\nNAME: %s\nCONTACT NO.: %s\nADDRESS: %s\nEMAIL ID:%s\nSKILLS: %s\nEXPERIENCE: %s\nNUMBER OF PROJECTS: %s\nUNIQUE ID: %s\nJOB ROLE: %s\n\n", key, r, r->name, r->mobile, r->address, r->email, r->skills, r->experience, r->projects_num, r->unique, r->job_role);
+        printf("Key: %d   Location: %p\nNAME:\t%s\nCONTACT NO.:\t%s\nADDRESS:\t%s\nEMAIL ID:\t%s\nSKILLS: \t%s\nEXPERIENCE:\t%s\nNUMBER OF PROJECTS:\t%s\nUNIQUE ID:\t%s\nJOB ROLE:\t%s\n\n", key, r, r->name, r->mobile, r->address, r->email, r->skills, r->experience, r->projects_num, r->unique, r->job_role);
 }
 
 // Find and print the range
@@ -1038,7 +1027,13 @@ void insert_trie(trieNode * t, char * c){
 	trieNode * p = t;
 	int len = strlen(c);
 	for(int i = 0; i < len; i++){
-		int index = c[i] - 'a';
+		int index;
+		if(c[i]>='a' && c[i]<='z')
+		 index = c[i] - 'a';
+		else if(c[i]>='A' && c[i]<='Z')
+			index=c[i]-'A'+26;
+		else if(c[i]==' ')
+			index=52;
 		if(p -> arr[index] == NULL){
 			p -> arr[index] = createNode();
 		}
@@ -1052,7 +1047,13 @@ bool search(trieNode * t, char * c){
 	trieNode * p = t;
 	int len = strlen(c);
 	for(int i = 0; i < len; i++){
-		int index = c[i] - 'a';
+		int index;
+		if(c[i]>='a' && c[i]<='z')
+		 index = c[i] - 'a';
+		else if(c[i]>='A' && c[i]<='Z')
+			index=c[i]-'A'+26;
+		else if(c[i]==' ')
+			index=52;
 		if(p -> arr[index] == NULL) return false;
 		p = p -> arr[index];
 	}
@@ -1060,39 +1061,130 @@ bool search(trieNode * t, char * c){
 	else return false;
 }
 
-/*trieNode * createTrie(char * skills[NumSkills]){
-	
-}*/
-//int counter(record* ptr){
+trieNode* fill_trie(int i){
+	trieNode* t=createNode();
+	switch(i) {
+    case 0: // CEO
+        insert_trie(t, "Strategic Planning");
+        insert_trie(t, "Leadership Development");
+        insert_trie(t, "Financial Management");
+        insert_trie(t, "Decision Making");
+        insert_trie(t, "Public Speaking");
+        break;
+    case 1: // CTO
+        insert_trie(t, "Software Development");
+        insert_trie(t, "Project Management");
+        insert_trie(t, "Technology Innovation");
+        insert_trie(t, "Team Leadership");
+        insert_trie(t, "Cloud Computing");
+        break;
+    case 2: // VP of Engineering
+        insert_trie(t, "Software Architecture");
+        insert_trie(t, "Agile Methodologies");
+        insert_trie(t, "Technical Leadership");
+        insert_trie(t, "System Design");
+        insert_trie(t, "Continuous Integration or Continuous Deployment");
+        break;
+    case 3: // Chief Architect
+        insert_trie(t, "Enterprise Architecture");
+        insert_trie(t, "Solution Design");
+        insert_trie(t, "Scalability Planning");
+        insert_trie(t, "System Integration");
+        insert_trie(t, "API Design");
+        break;
+    case 4: // Technical Lead
+        insert_trie(t, "Software Design Patterns");
+        insert_trie(t, "Code Review");
+        insert_trie(t, "Mentoring/Coaching");
+        insert_trie(t, "Technical Documentation");
+        insert_trie(t, "Problem Solving");
+        break;
+    case 5:
+    	insert_trie(t, "Software Architecture");
+        insert_trie(t, "System Design");
+        insert_trie(t, "Object-Oriented Programming");
+        insert_trie(t, "Test-Driven Development");
+        insert_trie(t, "Debugging");
+        break;
+    case 6: // Senior Software Engineer
+        insert_trie(t, "Object-Oriented Programming");
+        insert_trie(t, "Test-Driven Development");
+        insert_trie(t, "Version Control");
+        insert_trie(t, "Debugging");
+        insert_trie(t, "Software Optimization");
+        break;
+    case 7: // VP of Marketing
+        insert_trie(t, "Digital Marketing Strategy");
+        insert_trie(t, "Brand Management");
+        insert_trie(t, "Market Research");
+        insert_trie(t, "Campaign Management");
+        insert_trie(t, "Content Marketing");
+        break;
+    case 8: // Product Manager
+        insert_trie(t, "Product Lifecycle Management");
+        insert_trie(t, "User Experience Design");
+        insert_trie(t, "Market Analysis");
+        insert_trie(t, "Product Roadmapping");
+        insert_trie(t, "Agile Product Development");
+        break;
+    case 9: // HR Director
+        insert_trie(t, "Talent Acquisition");
+        insert_trie(t, "Employee Relations");
+        insert_trie(t, "Performance Management");
+        insert_trie(t, "Diversity and Inclusion");
+        insert_trie(t, "HR Compliance");
+        break;
+    case 10: // Recruiting Director
+        insert_trie(t, "Candidate Sourcing");
+        insert_trie(t, "Interviewing Techniques");
+        insert_trie(t, "Recruitment Metrics Analysis");
+        insert_trie(t, "Employer Branding");
+        insert_trie(t, "Applicant Tracking Systems");
+        break;
+}
 	
 
+	return t;	
+}	
+void display_role_wise(roles* r, char *check, node* root){
+	int i=get_role_code2(check);
+	rolenode* p=r->vertices[i];
+	while(p){
+		findAndPrint(root, atoi(p->recptr->unique),'a');
+		
+		p=p->next;
+	}
+
+}
 void selection_process(node** root,node** root1, roles* r, roles* r1,char *check){
 FILE* file;
-	file = fopen("employees.txt", "a+");
-	if (file == NULL)
-                {
-                    perror("Error opening file.");
-                    return ;
-                }
+	
 	int i=get_role_code2(check);
 	Heap a;
 	
 	initHeap(&a, r->roleid[i]);
-	trieNode* ceo = createNode();
-	insert_trie(ceo, "c");
-	insert_trie(ceo, "java");
+	trieNode* t = fill_trie(i);
+	
+	//printf("%d\n",i);
+	
 	rolenode* p=r->vertices[i];
+	//printf("%d\n", r->roleid[i]);
 	char *token;
-while(vacancy(check,r)!=0 && p!=NULL){	
+	int looper=1;
+	char* tempskills;
 	while(p){
 		int count=0;
 		//printf("bp\n");
-		token = strtok(p->recptr->skills, "_");	
-	
+		tempskills=(char*)malloc(sizeof(char)*(strlen(p->recptr->skills)+1));
+		strcpy(tempskills, p->recptr->skills);
+		//printf("%s\n", p->recptr->skills);
+		token = strtok(tempskills, "_");	
+		//printf("%s\n", p->recptr->skills);
 		while(token!=NULL){
 		//printf("%s\n", token);
-			if(search(ceo, token))
+			if(search(t, token))
 			{
+
 				count++;
 			}
 		
@@ -1100,8 +1192,15 @@ while(vacancy(check,r)!=0 && p!=NULL){
 		}
 		count=count+atoi(p->recptr->experience)+atoi(p->recptr->projects_num);
 		insert_heap(&a, atoi(p->recptr->unique), count, p->recptr);
+		free(tempskills);
 		p=p->next;
+		
 	}
+		//printf("vacancy check=%d\n", vacancy(check,r1));
+		//printf("Applicants for this=%d\n", r->roleid[i]);
+		int initial=(r->roleid[i]);
+while(vacancy(check,r1)!=0 && looper <= initial ){	
+	//printf("upper: %d\n", looper);
 	priority* max=Remove(&a);
 	
 	                int key;
@@ -1117,12 +1216,18 @@ while(vacancy(check,r)!=0 && p!=NULL){
     	strcpy(unique, max->ptr->unique);
     	strcpy(job_role, max->ptr->job_role);
     	
-
 	*root1 = insert(r1, *root1, key,name, mobile, address, email, skills, experience, projects_num, unique, job_role);
+	file = fopen("employees.txt", "a+");
+	if (file == NULL)
+                {
+                    perror("Error opening file.");
+                    return ;
+                }
 	               //findAndPrint(*root1, 124, 'a');
 	fprintf(file, "%d,%s,%s,%s,%s,%s,%s,%s,%s,%s\n", key,name, mobile, address, email, skills, experience, projects_num, unique, job_role);
                 fclose(file);
 	//code for deletion
+	
 	*root = writeToFileExcludingRecord(*root, "applicants.txt", key);
 
 file = fopen("applicants.txt", "a+");
@@ -1153,8 +1258,13 @@ if (file == NULL)
                 }
 	//printf("bp3\n");
 fclose(file);
-
+	//printf("looper=%d\t", looper);
+	//printf("roleid=%d\t", r->roleid[i]);
+	//printf("vacancy check=%d\n", vacancy(check,r1));
+	looper++;
 }
+//printf("%d\n", looper);
+//free(t);
 }	
 		
 void insert_role(roles** ptr, record* recptr){
@@ -1487,20 +1597,27 @@ char *query;
 
             else if (t->operation == 1 && t->star == 1 && t->assist == 2 && (t->table == 20 || t->table == 21) && t->condition == 9 && t->field >= 10 && t->field <= 18 && (operation==1 || operation==2))
             { // SELECT * FROM tablename WHERE <field> = <value> ;
-                token = strtok(NULL, " ,;=()");
-                // findAndPrintRange(root,100,102 , instruction='a');
-                // writeToFile(root, filename);
-                // printf("Inside the select logic:is root leaf,%d",root->is_leaf);
-                // printf("TOKEN:%s\n",(token));
-                if(t->table==20)
-                findAndPrint(*root, atoi(token), 'a');
-                else if(t->table==21)
-                findAndPrint(*root1, atoi(token), 'a');
+                if(t->field==17){
+                	token = strtok(NULL, " ,;=()");
+                
+                	if(t->table==20)
+                		findAndPrint(*root, atoi(token), 'a');
+                	else if(t->table==21)
+                		findAndPrint(*root1, atoi(token), 'a');
+                }
+                else if(t->field==18){
+                	token = strtok(NULL, ",;=()");
+                	if(t->table==20)
+                		display_role_wise( r, token, *root);
+                	else if(t->table==21)
+                		display_role_wise(r1, token, *root1);
+                }
+                	
                 break;
             }
 
             else if (t->operation == 8 && t->star == 0 && t->assist == 2 && (t->table == 20 || t->table == 21) && t->condition == 9 &&
-                     t->field >= 10 && t->field <= 18 && operation==1)
+                     t->field >= 10 && t->field <= 18 )
             { // DELETE FROM tablename WHERE <field>= <value>;
                 token = strtok(NULL, " ,;=()");
                 if(t->table==20){
@@ -1699,9 +1816,9 @@ int main()
         					printf("There are no positions vacant for this position\n");
         				}
         				else {
-        					
+
         					selection_process(&root, &root1, &r,&r1, check);
-        					
+
         				}
         				free(check);
         				
