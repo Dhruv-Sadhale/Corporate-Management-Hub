@@ -104,7 +104,16 @@ This project introduces a comprehensive Corporate Management Hub leveraging adva
 9|-- HR Director(1)
 10|-- Recruiting Director(1)
 
+skills:
+1.CEO:
 
+    Strategic Planning
+    Leadership Development
+    Financial Management
+    Decision Making
+    Public Speaking
+   
+2.
 
 
 

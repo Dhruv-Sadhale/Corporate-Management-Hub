@@ -1,3 +1,5 @@
+91,y,2,y,y,c,2,11,91,CEO
+99,x,1,a,a,c,3,3,99,CEO
 101,John Doe,1234567890,123 Main St, john.doe@example.com,java_python,5years_developer,2,101,Developer
 102,Alice Smith,9876543210,456 Elm St, alice.smith@example.com,html_css_js,3years_designer,1,102,Designer
 103,Bob Johnson,5555555555,789 Oak St, bob.johnson@example.com,sql_database,8years_admin,4,103,Admin
@@ -16,8 +18,4 @@
 116,Daniel Gonzalez,4445556666,963 Oak St, daniel.gonzalez@example.com,react_angular_vue,4years_frontend,4,116,Frontend Developer
 117,Isabella Wilson,1112223333,147 Pine St, isabella.wilson@example.com,python_ruby_php,5years_backend,3,117,Backend Developer
 118,Alexander Anderson,7778889999,258 Elm St, alexander.anderson@example.com,cpp_java_csharp,9years_senior_dev,6,118,Senior Developer
-119,Emma Taylor,5554443333,369 Maple St, emma.taylor@example.com,html_css_javascript,3years_designer,3,119,Designer
 120,Aiden Thomas,9990001111,753 Walnut St, aiden.thomas@example.com,java_python_csharp,11years_lead_dev,8,120,Lead Developer
-123,dhruv,2,a,a,a,a,2,123,ceo
-124,x,1,a,a,c,3,3,124,CEO
-125,y,2,y,y,c,2,2,125,CEO

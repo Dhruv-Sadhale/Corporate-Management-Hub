@@ -54,13 +54,13 @@ trieNode * createTrie(char * skills[NumSkills]){
 */
 int main(){
 	trieNode * ceo = createNode();
-	insert_trie(ceo, "C");
-	insert_trie(ceo, "Java");
+	insert_trie(ceo, "cpp");
+	insert_trie(ceo, "java");
 	/*insert(trie, "this");
 	insert(trie, "is");
 	insert(trie, "project");
 	printf("Is the word 'hello' present?");*/
-	if (search(ceo, "Java")) printf("Yes\n");
+	if (search(ceo, "c")) printf("Yes\n");
 	else printf("No\n");
 	
 	return 0;

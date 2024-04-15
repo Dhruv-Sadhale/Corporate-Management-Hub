@@ -14,24 +14,4 @@ apply for company
 		|- delete from applicants table
 		 
 		
-*root = writeToFileExcludingRecord(*root, "applicants.txt", atoi(token));
-FILE* file;
-file = fopen("applicants.txt", "a+");
-if (file == NULL)
-                {
-                    perror("Error opening file.");
-                    return ;
-                }
-                int key;
-    char name[100], mobile[100], address[100], email[100], skills[100], experience[100], projects_num[100], unique[100], job_role[100];
-    char line[1000];
-    
-*root = NULL;
-                	r=NULL;
-                	while (fgets(line, sizeof(line), file) != NULL)
-                {
-                    sscanf(line, "%d,%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^\n]",
-                           &key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
-                    *root = insert(r,*root, key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
-                }
-fclose(file);
+

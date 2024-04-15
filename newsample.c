@@ -309,7 +309,7 @@ void findAndPrint(node *const root, int key, bool verbose)
     if (r == NULL)
         printf("Record not found under key %d.\n", key);
     else
-        printf("Key: %d   Location: %p\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n", key, r, r->name, r->mobile, r->address, r->email, r->skills, r->experience, r->projects_num, r->unique, r->job_role);
+        printf("Key: %d   Location: %p\nNAME: %s\nCONTACT NO.: %s\nADDRESS: %s\nEMAIL ID:%s\nSKILLS: %s\nEXPERIENCE: %s\nNUMBER OF PROJECTS: %s\nUNIQUE ID: %s\nJOB ROLE: %s\n\n", key, r, r->name, r->mobile, r->address, r->email, r->skills, r->experience, r->projects_num, r->unique, r->job_role);
 }
 
 // Find and print the range
@@ -1080,7 +1080,6 @@ FILE* file;
 	initHeap(&a, r->roleid[i]);
 	trieNode* ceo = createNode();
 	insert_trie(ceo, "c");
-	//printf("%d\n", r->roleid[i]);
 	insert_trie(ceo, "java");
 	rolenode* p=r->vertices[i];
 	char *token;
@@ -1108,15 +1107,23 @@ while(vacancy(check,r)!=0 && p!=NULL){
 	                int key;
     char name[100], mobile[100], address[100], email[100], skills[100], experience[100], projects_num[100], unique[100], job_role[100];
     	key=max->unique_no;
+    	strcpy(name, max->ptr->name);
+    	strcpy(mobile,max->ptr->mobile);
+    	strcpy(address,max->ptr->address);
+    	strcpy(email, max->ptr->email);
+    	strcpy(skills, max->ptr->skills);
+    	strcpy(experience, max->ptr->experience);
+    	strcpy(projects_num, max->ptr->projects_num);
+    	strcpy(unique, max->ptr->unique);
+    	strcpy(job_role, max->ptr->job_role);
     	
 
-	*root1 = insert(r1, *root1, max->unique_no, max->ptr->name, max->ptr->mobile, max->ptr->address, max->ptr->email, max->ptr->skills, max->ptr->experience, max->ptr->projects_num, max->ptr->unique, max->ptr->job_role);
-	               // findAndPrint(*root1, 124, 'a');
-	fprintf(file, "%d,%s,%s,%s,%s,%s,%s,%s,%s,%s\n", max->unique_no, max->ptr->name, max->ptr->mobile, max->ptr->address, max->ptr->email, max->ptr->skills, max->ptr->experience, max->ptr->projects_num, max->ptr->unique, max->ptr->job_role);
+	*root1 = insert(r1, *root1, key,name, mobile, address, email, skills, experience, projects_num, unique, job_role);
+	               //findAndPrint(*root1, 124, 'a');
+	fprintf(file, "%d,%s,%s,%s,%s,%s,%s,%s,%s,%s\n", key,name, mobile, address, email, skills, experience, projects_num, unique, job_role);
                 fclose(file);
 	//code for deletion
-	printf("bp3\n");
-	*root = writeToFileExcludingRecord(*root, "applicants.txt", max->unique_no);
+	*root = writeToFileExcludingRecord(*root, "applicants.txt", key);
 
 file = fopen("applicants.txt", "a+");
 if (file == NULL)
@@ -1128,14 +1135,25 @@ if (file == NULL)
     char line[1000];
     
 		*root = NULL;
-                	r=NULL;
+			int i=0;
+			while(i<r->numvertices){
+                	free(r->vertices[i]);
+                	i++;
+                	}
+                	free(r->max);
+                	free(r->roleid);
+                	
+                	init_roles(r);
                 	while (fgets(line, sizeof(line), file) != NULL)
                 {
                     sscanf(line, "%d,%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^\n]",
                            &key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
                     *root = insert(r,*root, key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
+                   
                 }
+	//printf("bp3\n");
 fclose(file);
+
 }
 }	
 		
@@ -1169,21 +1187,45 @@ node *insert(roles* ptr, node *root, int key, char *name, char *mobile, char *ad
     {
         // Update the existing record
         // Allocate memory for each string field and copy the content
-        record_pointer->name = name;
-        record_pointer->mobile = mobile;
-        record_pointer->address = address;
-        record_pointer->email = email;
-        record_pointer->skills = skills;
-        record_pointer->experience = experience;
-        record_pointer->projects_num = projects_num;
-        record_pointer->unique = unique;
-        record_pointer->job_role = job_role;
-	insert_role(&ptr, record_pointer);
+        free(record_pointer);
+      record_pointer = (record *)malloc(sizeof(record));
+    record_pointer->name = (char *)malloc(sizeof(char) * (strlen(name) + 1));
+    record_pointer->mobile = (char *)malloc(sizeof(char) * (strlen(mobile) + 1));
+    record_pointer->address = (char *)malloc(sizeof(char) * (strlen(address) + 1));
+    record_pointer->email = (char *)malloc(sizeof(char) * (strlen(email) + 1));
+    record_pointer->skills = (char *)malloc(sizeof(char) * (strlen(skills) + 1));
+    record_pointer->experience = (char *)malloc(sizeof(char) * (strlen(experience) + 1));
+    record_pointer->unique = (char *)malloc(sizeof(char) * (strlen(unique) + 1));
+    record_pointer->projects_num = (char *)malloc(sizeof(char) * (strlen(projects_num) + 1));
+    record_pointer->job_role = (char *)malloc(sizeof(char) * (strlen(job_role) + 1));
+    if (record_pointer == NULL)
+    {
+        perror("Record creation.");
+        exit(EXIT_FAILURE);
+    }
+    else
+    {
+        strcpy(record_pointer->name, name);// recordptr->name=name;
+        strcpy(record_pointer->mobile, mobile);
+        strcpy(record_pointer->address, address);
+        strcpy(record_pointer->email, email);
+        strcpy(record_pointer->skills, skills);
+        strcpy(record_pointer->experience, experience);
+        strcpy(record_pointer->projects_num, projects_num);
+        strcpy(record_pointer->unique, unique);
+        strcpy(record_pointer->job_role, job_role);
+    }
+    
         return root;
     }
 
     record_pointer = makeRecord(name, mobile, address, email, skills, experience, projects_num, unique, job_role);
 	//printf("bp1\n");
+	if(ptr==NULL){
+	//printf("here\n");
+		//init_roles(ptr);
+	//printf("here2\n");
+	}
 	insert_role(&ptr, record_pointer);
 	//printf("bp2\n");
     if (root == NULL)
@@ -1486,7 +1528,15 @@ char *query;
     char line[1000]; 
 		if(t->table==20){
                 	*root = NULL;
-                	r=NULL;
+                	int i;
+                	while(i<r->numvertices){
+                	free(r->vertices[i]);
+                	i++;
+                	}
+                	free(r->max);
+                	free(r->roleid);
+                	
+                	init_roles(r);
                 	while (fgets(line, sizeof(line), file) != NULL)
                 {
                     sscanf(line, "%d,%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^\n]",
@@ -1558,12 +1608,14 @@ int main()
         sscanf(line, "%d,%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^\n]",
                &key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
         root = insert(&r,root, key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
+
     }
 	while (fgets(line, sizeof(line), file1) != NULL)
     {
         sscanf(line, "%d,%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^\n]",
                &key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
         root1 = insert(&r1,root1, key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
+       
     }
     
     

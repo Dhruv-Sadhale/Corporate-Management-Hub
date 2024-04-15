@@ -17,25 +17,13 @@ void swap(priority* a, priority* b) {
 }
 
 int isEmpty(Heap* h) {
-	return(!(h -> rear));
+	return(!((h -> rear) + 1));
 }
 
 int isFull(Heap* h) {
 	return(h -> rear == h -> size - 1);
 }
 
-/*void HeapSort(int arr[], int size) {
-	Heap newHeap;
-	initHeap(&newHeap, size);
-	for (int i = 0; i < size; i++) {
-		insert(&newHeap, arr[i]);
-	}
-	int i = 0;
-	while(!isEmpty(&newHeap)) {
-		arr[i] = Remove(&newHeap);
-		i++;
-	}
-}*/
 
 void HeapSort(priority arr[], int size) {
 	Heap newHeap;
@@ -50,19 +38,7 @@ void HeapSort(priority arr[], int size) {
 	}
 }
 
-/*void insert(Heap* h, int value) {
-	if(h -> rear == h -> size - 1) {
-		printf("Heap is full. Cannot insert value.\n");
-		return;
-	}
-	h -> rear++;
-	int i = h -> rear;
-	while(i > 0 && value > h -> A[(i - 1) / 2]) {
-		h -> A[i] = h -> A[(i - 1) / 2];
-		i = (i - 1) / 2;
-	}
-	h -> A[i] = value;
-}*/
+
 
 void insert(Heap* h, int uqn, int coun) {
 	if(h -> rear == h -> size - 1) {
@@ -80,37 +56,18 @@ void insert(Heap* h, int uqn, int coun) {
 	h -> arr[i].unique_no = uqn;
 }
 
-/*int Remove(Heap* h) {
-	if(h -> rear < 0) {
-		printf("Heap is empty. Cannot remove value.\n");
-		return -1;
-	}
-	int removedValue = h -> A[0];
-	h -> A[0] = h -> A[h -> rear];
-	h -> rear--;
-	heapify(h, 0);
-	return removedValue;
-}*/
-
-/*priority Remove(Heap* h) {
-	if(h -> rear < 0) {
-		printf("Heap is empty. Cannot remove value.\n");
-		return NULL;
-	}
-	priority removedValue = h -> arr[0];
-	h -> arr[0] = h -> arr[h -> rear];
-	h -> rear--;
-	heapify(h, 0);
-	return removedValue;
-}*/
 
 priority* Remove(Heap* h) {
 	if(h -> rear < 0) {
 		printf("Heap is empty. Cannot remove value.\n");
 		return NULL;
 	}
-	priority* removedValue = &(h -> arr[0]);
-	h -> arr[0] = h -> arr[h -> rear];
+	priority rv;
+	rv.unique_no = h -> arr[0].unique_no;
+	rv.counter = h -> arr[0].counter;
+	priority* removedValue = &(rv);
+	h -> arr[0].unique_no = h -> arr[h -> rear].unique_no;
+	h -> arr[0].counter = h -> arr[h -> rear].counter;
 	h -> rear--;
 	heapify(h, 0);
 	return removedValue;
