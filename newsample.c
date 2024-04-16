@@ -4,10 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <string.h>
-#include <stdbool.h>
 #define SIZE 53
-#define NumSkills 
+#define NumSkills
 
 // Default order
 #define ORDER 3
@@ -24,10 +22,11 @@ typedef struct record
     char *unique;
     char *job_role;
 } record;
-typedef struct trieNode{
-	struct trieNode * arr[SIZE];
-	bool isEndOfWord;
-}trieNode;
+typedef struct trieNode
+{
+    struct trieNode *arr[SIZE];
+    bool isEndOfWord;
+} trieNode;
 typedef struct tokens
 {
     int operation;
@@ -38,16 +37,18 @@ typedef struct tokens
     int star;
 } tokens;
 
-typedef struct rolenode{
-	record* recptr;
-	struct rolenode *next;
-}rolenode;
-typedef struct roles{
-	rolenode **vertices;
-	int* roleid;
-	int* max;
-	int numvertices;
-}roles;
+typedef struct rolenode
+{
+    record *recptr;
+    struct rolenode *next;
+} rolenode;
+typedef struct roles
+{
+    rolenode **vertices;
+    int *roleid;
+    int *max;
+    int numvertices;
+} roles;
 // Node
 typedef struct node
 {
@@ -59,36 +60,38 @@ typedef struct node
     struct node *next;
 } node;
 
-typedef struct priority {
-	int unique_no;
-	int counter;
-	record* ptr;
-}priority;
+typedef struct priority
+{
+    int unique_no;
+    int counter;
+    record *ptr;
+} priority;
 
-typedef struct Heap{
-	priority* arr;
-	int size;
-	int rear;
-}Heap;
+typedef struct Heap
+{
+    priority *arr;
+    int size;
+    int rear;
+} Heap;
 int order = ORDER;
 node *queue = NULL;
 bool verbose_output = false;
 
-void initHeap(Heap* h, int size);
+void initHeap(Heap *h, int size);
 
-void swap(priority* a, priority* b);
+void swap(priority *a, priority *b);
 
-int isEmpty(Heap* h);
+int isEmpty(Heap *h);
 
-int isFull(Heap* h);
+int isFull(Heap *h);
 
 void HeapSort(priority arr[], int size);
 
-void insert_heap(Heap* h, int uqn, int coun, record* ptr);
+void insert_heap(Heap *h, int uqn, int coun, record *ptr);
 
-priority* Remove(Heap* h);
+priority *Remove(Heap *h);
 
-void heapify(Heap* h, int index);
+void heapify(Heap *h, int index);
 
 // Enqueue
 void enqueue(node *new_node);
@@ -122,7 +125,7 @@ node *insertIntoNodeAfterSplitting(node *root, node *parent,
 node *insertIntoParent(node *root, node *left, int key, node *right);
 node *insertIntoNewRoot(node *left, int key, node *right);
 node *startNewTree(int key, record *pointer);
-node *insert(roles* ptr, node *root, int key, char *name, char *mobile, char *address, char *email, char *skills, char *experience, char *projects_num, char *unique, char *job_role);
+node *insert(roles *ptr, node *root, int key, char *name, char *mobile, char *address, char *email, char *skills, char *experience, char *projects_num, char *unique, char *job_role);
 void init_roles(roles *ptr);
 node *writeToFileExcludingRecord(node *root, const char *filename, int keyToExclude);
 void writeLeafNodesExcludingRecord(node *node, FILE *file, int keyToExclude);
@@ -155,30 +158,29 @@ node *dequeue(void)
     n->next = NULL;
     return n;
 }
-void init_roles(roles *ptr){
-	ptr->vertices=(rolenode**)malloc(sizeof(rolenode*)*ROLE_SIZE);
-	ptr->numvertices=ROLE_SIZE;
-	ptr->roleid=(int*)malloc(sizeof(int)*ROLE_SIZE);
-	ptr->max=(int*)malloc(sizeof(int)*ROLE_SIZE);
-	for(int i=0;i<ROLE_SIZE;i++){
-		ptr->vertices[i]=NULL;
-		ptr->roleid[i]=0;
-	}
-	ptr->max[0]=1;
-	ptr->max[1]=1;
-	ptr->max[2]=3;
-	ptr->max[3]=1;
-	ptr->max[4]=5;
-	ptr->max[5]=10;
-	ptr->max[6]=20;
-	ptr->max[7]=1;
-	ptr->max[8]=5;
-	ptr->max[9]=1;
-	ptr->max[10]=1;
-	
+void init_roles(roles *ptr)
+{
+    ptr->vertices = (rolenode **)malloc(sizeof(rolenode *) * ROLE_SIZE);
+    ptr->numvertices = ROLE_SIZE;
+    ptr->roleid = (int *)malloc(sizeof(int) * ROLE_SIZE);
+    ptr->max = (int *)malloc(sizeof(int) * ROLE_SIZE);
+    for (int i = 0; i < ROLE_SIZE; i++)
+    {
+        ptr->vertices[i] = NULL;
+        ptr->roleid[i] = 0;
+    }
+    ptr->max[0] = 1;
+    ptr->max[1] = 1;
+    ptr->max[2] = 3;
+    ptr->max[3] = 1;
+    ptr->max[4] = 5;
+    ptr->max[5] = 10;
+    ptr->max[6] = 20;
+    ptr->max[7] = 1;
+    ptr->max[8] = 5;
+    ptr->max[9] = 1;
+    ptr->max[10] = 1;
 }
-	
-
 
 // Print the leaves
 
@@ -462,7 +464,7 @@ record *makeRecord(char *name, char *mobile, char *address, char *email, char *s
     }
     else
     {
-        strcpy(record_pointer->name, name);// recordptr->name=name;
+        strcpy(record_pointer->name, name); // recordptr->name=name;
         strcpy(record_pointer->mobile, mobile);
         strcpy(record_pointer->address, address);
         strcpy(record_pointer->email, email);
@@ -472,7 +474,7 @@ record *makeRecord(char *name, char *mobile, char *address, char *email, char *s
         strcpy(record_pointer->unique, unique);
         strcpy(record_pointer->job_role, job_role);
     }
-    
+
     return record_pointer;
 }
 node *makeNode(void)
@@ -758,312 +760,343 @@ node *startNewTree(int key, record *pointer)
     root->num_keys++;
     return root;
 }
-//role code starts
+// role code starts
 
-rolenode* create_role_node(record **recptr){
-	rolenode* nn=(rolenode*)malloc(sizeof(rolenode));
-	if(nn){
-		nn->recptr=*recptr;
-		nn->next=NULL;
-	}
-	return nn;
+rolenode *create_role_node(record **recptr)
+{
+    rolenode *nn = (rolenode *)malloc(sizeof(rolenode));
+    if (nn)
+    {
+        nn->recptr = *recptr;
+        nn->next = NULL;
+    }
+    return nn;
 }
-int get_role_code(record* recptr){
-	int i;
-	if(strcmp(recptr->job_role, "CEO")==0){
-		i=0;
-
-	}
-	else if(strcmp(recptr->job_role, "CTO")==0){
-		i=1;
-
-	}
-	else if(strcmp(recptr->job_role, "VP of Engineering")==0){
-		i=2;
-
-	}
-	else if(strcmp(recptr->job_role, "Chief Architect")==0){
-		i=3;
-
-	}
-	else if(strcmp(recptr->job_role, "Technical Lead")==0){
-		i=4;
-
-	}
-	else if(strcmp(recptr->job_role, "Principal Software Engineer")==0){
-		i=5;
-
-	}
-	else if(strcmp(recptr->job_role, "Senior Software Engineer")==0){
-		i=6;
-
-	}
-	else if(strcmp(recptr->job_role, "VP of Marketing")==0){
-		i=7;
-
-	}
-	else if(strcmp(recptr->job_role, "Product Manager")==0){
-		i=8;
-
-	}
-	else if(strcmp(recptr->job_role, "HR Director")==0){
-		i=9;
-
-	}
-	else if(strcmp(recptr->job_role, "Recruiting Director")==0){
-		i=10;
-
-	}
-	else i=-1;
-	return i;
+int get_role_code(record *recptr)
+{
+    int i;
+    if (strcmp(recptr->job_role, "CEO") == 0)
+    {
+        i = 0;
+    }
+    else if (strcmp(recptr->job_role, "CTO") == 0)
+    {
+        i = 1;
+    }
+    else if (strcmp(recptr->job_role, "VP of Engineering") == 0)
+    {
+        i = 2;
+    }
+    else if (strcmp(recptr->job_role, "Chief Architect") == 0)
+    {
+        i = 3;
+    }
+    else if (strcmp(recptr->job_role, "Technical Lead") == 0)
+    {
+        i = 4;
+    }
+    else if (strcmp(recptr->job_role, "Principal Software Engineer") == 0)
+    {
+        i = 5;
+    }
+    else if (strcmp(recptr->job_role, "Senior Software Engineer") == 0)
+    {
+        i = 6;
+    }
+    else if (strcmp(recptr->job_role, "VP of Marketing") == 0)
+    {
+        i = 7;
+    }
+    else if (strcmp(recptr->job_role, "Product Manager") == 0)
+    {
+        i = 8;
+    }
+    else if (strcmp(recptr->job_role, "HR Director") == 0)
+    {
+        i = 9;
+    }
+    else if (strcmp(recptr->job_role, "Recruiting Director") == 0)
+    {
+        i = 10;
+    }
+    else
+        i = -1;
+    return i;
 }
-int vacancy(char* job_role, roles* r){
-int i;
-	if(strcmp(job_role, "CEO")==0){
-		i=0;
+int vacancy(char *job_role, roles *r)
+{
+    int i;
+    if (strcmp(job_role, "CEO") == 0)
+    {
+        i = 0;
+    }
+    else if (strcmp(job_role, "CTO") == 0)
+    {
+        i = 1;
+    }
+    else if (strcmp(job_role, "VP of Engineering") == 0)
+    {
+        i = 2;
+    }
+    else if (strcmp(job_role, "Chief Architect") == 0)
+    {
+        i = 3;
+    }
+    else if (strcmp(job_role, "Technical Lead") == 0)
+    {
+        i = 4;
+    }
+    else if (strcmp(job_role, "Principal Software Engineer") == 0)
+    {
+        i = 5;
+    }
+    else if (strcmp(job_role, "Senior Software Engineer") == 0)
+    {
+        i = 6;
+    }
+    else if (strcmp(job_role, "VP of Marketing") == 0)
+    {
+        i = 7;
+    }
+    else if (strcmp(job_role, "Product Manager") == 0)
+    {
+        i = 8;
+    }
+    else if (strcmp(job_role, "HR Director") == 0)
+    {
+        i = 9;
+    }
+    else if (strcmp(job_role, "Recruiting Director") == 0)
+    {
+        i = 10;
+    }
 
-	}
-	else if(strcmp(job_role, "CTO")==0){
-		i=1;
-
-	}
-	else if(strcmp(job_role, "VP of Engineering")==0){
-		i=2;
-
-	}
-	else if(strcmp(job_role, "Chief Architect")==0){
-		i=3;
-
-	}
-	else if(strcmp(job_role, "Technical Lead")==0){
-		i=4;
-
-	}
-	else if(strcmp(job_role, "Principal Software Engineer")==0){
-		i=5;
-
-	}
-	else if(strcmp(job_role, "Senior Software Engineer")==0){
-		i=6;
-
-	}
-	else if(strcmp(job_role, "VP of Marketing")==0){
-		i=7;
-
-	}
-	else if(strcmp(job_role, "Product Manager")==0){
-		i=8;
-
-	}
-	else if(strcmp(job_role, "HR Director")==0){
-		i=9;
-
-	}
-	else if(strcmp(job_role, "Recruiting Director")==0){
-		i=10;
-
-	}
-	
-	return ( r->max[i]-r->roleid[i]);
+    return (r->max[i] - r->roleid[i]);
 }
-//heap functions start
-void initHeap(Heap* h, int size) {
-	h -> arr = (priority*)malloc(size * sizeof(priority));
-	h -> size = size;
-	h -> rear = -1;
-	
-	return;
-}
+// heap functions start
+void initHeap(Heap *h, int size)
+{
+    h->arr = (priority *)malloc(size * sizeof(priority));
+    h->size = size;
+    h->rear = -1;
 
-void swap(priority* a, priority* b) {
-	int tempuniqueno = a -> unique_no;
-	int tempcounter = a -> counter;
-	record* tempptr=a->ptr;
-	a -> unique_no = b -> unique_no;
-	a -> counter = b -> counter;
-	a->ptr=b->ptr;
-	b -> unique_no = tempuniqueno;
-	b -> counter = tempcounter;
-	b->ptr=tempptr;
-	return;
+    return;
 }
 
-int isEmpty(Heap* h) {
-	return(!((h -> rear) + 1));
+void swap(priority *a, priority *b)
+{
+    int tempuniqueno = a->unique_no;
+    int tempcounter = a->counter;
+    record *tempptr = a->ptr;
+    a->unique_no = b->unique_no;
+    a->counter = b->counter;
+    a->ptr = b->ptr;
+    b->unique_no = tempuniqueno;
+    b->counter = tempcounter;
+    b->ptr = tempptr;
+    return;
 }
 
-int isFull(Heap* h) {
-	return(h -> rear == h -> size - 1);
+int isEmpty(Heap *h)
+{
+    return (!((h->rear) + 1));
 }
 
-
-void HeapSort(priority arr[], int size) {
-	Heap newHeap;
-	initHeap(&newHeap, size);
-	for (int i = 0; i < size; i++) {
-		insert_heap(&newHeap, arr[i].unique_no, arr[i].counter, arr[i].ptr);
-	}
-	int i = 0;
-	while(!isEmpty(&newHeap)) {
-		arr[i] = *(Remove(&newHeap));
-		i++;
-	}
+int isFull(Heap *h)
+{
+    return (h->rear == h->size - 1);
 }
 
-
-
-void insert_heap(Heap* h, int uqn, int coun, record* ptr) {
-	if(h -> rear == h -> size - 1) {
-		printf("Heap is full. Cannot insert value.\n");
-		return;
-	}
-	h -> rear++;
-	int i = h -> rear;
-	while(i > 0 && coun > (h -> arr[(i - 1) / 2].counter)) {
-		h -> arr[i].counter = h -> arr[(i - 1) / 2].counter;
-		h -> arr[i].unique_no = h -> arr[(i - 1) / 2].unique_no;
-		h-> arr[i].ptr=h->arr[(i-1)/2].ptr;
-		i = (i - 1) / 2;
-	}
-	h -> arr[i].counter = coun;
-	h -> arr[i].unique_no = uqn;
-	h->arr[i].ptr=ptr;
+void HeapSort(priority arr[], int size)
+{
+    Heap newHeap;
+    initHeap(&newHeap, size);
+    for (int i = 0; i < size; i++)
+    {
+        insert_heap(&newHeap, arr[i].unique_no, arr[i].counter, arr[i].ptr);
+    }
+    int i = 0;
+    while (!isEmpty(&newHeap))
+    {
+        arr[i] = *(Remove(&newHeap));
+        i++;
+    }
 }
 
-
-priority* Remove(Heap* h) {
-	if(h -> rear < 0) {
-		printf("Heap is empty. Cannot remove value.\n");
-		return NULL;
-	}
-	priority rv;
-	rv.unique_no = h -> arr[0].unique_no;
-	rv.counter = h -> arr[0].counter;
-	rv.ptr=h->arr[0].ptr;
-	priority* removedValue = &(rv);
-	h -> arr[0].unique_no = h -> arr[h -> rear].unique_no;
-	h -> arr[0].counter = h -> arr[h -> rear].counter;
-	h -> arr[0].ptr = h -> arr[h -> rear].ptr;
-	h -> rear--;
-	heapify(h, 0);
-	return removedValue;
+void insert_heap(Heap *h, int uqn, int coun, record *ptr)
+{
+    if (h->rear == h->size - 1)
+    {
+        printf("Heap is full. Cannot insert value.\n");
+        return;
+    }
+    h->rear++;
+    int i = h->rear;
+    while (i > 0 && coun > (h->arr[(i - 1) / 2].counter))
+    {
+        h->arr[i].counter = h->arr[(i - 1) / 2].counter;
+        h->arr[i].unique_no = h->arr[(i - 1) / 2].unique_no;
+        h->arr[i].ptr = h->arr[(i - 1) / 2].ptr;
+        i = (i - 1) / 2;
+    }
+    h->arr[i].counter = coun;
+    h->arr[i].unique_no = uqn;
+    h->arr[i].ptr = ptr;
 }
 
-void heapify(Heap* h, int index) {
-	int largest = index;
-	int left = 2 * index + 1;
-	int right = 2 * index + 2;
-	if(left <= h -> rear && h -> arr[left].counter > h -> arr[largest].counter) largest = left;
-	if(right <= h -> rear && h -> arr[right].counter > h -> arr[largest].counter) largest = right;
-	if(largest != index) {
-		swap(&h -> arr[index], &h -> arr[largest]);
-		heapify(h, largest);
-	}
-	return;
-}
-int get_role_code2(char* job_role){
-
-int i;
-	if(strcmp(job_role, "CEO")==0){
-		i=0;
-
-	}
-	else if(strcmp(job_role, "CTO")==0){
-		i=1;
-
-	}
-	else if(strcmp(job_role, "VP of Engineering")==0){
-		i=2;
-
-	}
-	else if(strcmp(job_role, "Chief Architect")==0){
-		i=3;
-
-	}
-	else if(strcmp(job_role, "Technical Lead")==0){
-		i=4;
-
-	}
-	else if(strcmp(job_role, "Principal Software Engineer")==0){
-		i=5;
-
-	}
-	else if(strcmp(job_role, "Senior Software Engineer")==0){
-		i=6;
-
-	}
-	else if(strcmp(job_role, "VP of Marketing")==0){
-		i=7;
-
-	}
-	else if(strcmp(job_role, "Product Manager")==0){
-		i=8;
-
-	}
-	else if(strcmp(job_role, "HR Director")==0){
-		i=9;
-
-	}
-	else if(strcmp(job_role, "Recruiting Director")==0){
-		i=10;
-
-	}
-	return i;
-}
-//trie codes start
-trieNode * createNode(){
-	trieNode * nn;
-	nn = (trieNode *)malloc(sizeof(trieNode));
-	if(nn){
-		nn -> isEndOfWord = false;
-		for(int i = 0; i < SIZE; i++){
-			nn -> arr[i] = NULL;
-		}
-	}
-	return nn;
+priority *Remove(Heap *h)
+{
+    if (h->rear < 0)
+    {
+        printf("Heap is empty. Cannot remove value.\n");
+        return NULL;
+    }
+    priority rv;
+    rv.unique_no = h->arr[0].unique_no;
+    rv.counter = h->arr[0].counter;
+    rv.ptr = h->arr[0].ptr;
+    priority *removedValue = &(rv);
+    h->arr[0].unique_no = h->arr[h->rear].unique_no;
+    h->arr[0].counter = h->arr[h->rear].counter;
+    h->arr[0].ptr = h->arr[h->rear].ptr;
+    h->rear--;
+    heapify(h, 0);
+    return removedValue;
 }
 
-void insert_trie(trieNode * t, char * c){
-	trieNode * p = t;
-	int len = strlen(c);
-	for(int i = 0; i < len; i++){
-		int index;
-		if(c[i]>='a' && c[i]<='z')
-		 index = c[i] - 'a';
-		else if(c[i]>='A' && c[i]<='Z')
-			index=c[i]-'A'+26;
-		else if(c[i]==' ')
-			index=52;
-		if(p -> arr[index] == NULL){
-			p -> arr[index] = createNode();
-		}
-		p = p -> arr[index];
-	}
-	p -> isEndOfWord = true;
-	return;
+void heapify(Heap *h, int index)
+{
+    int largest = index;
+    int left = 2 * index + 1;
+    int right = 2 * index + 2;
+    if (left <= h->rear && h->arr[left].counter > h->arr[largest].counter)
+        largest = left;
+    if (right <= h->rear && h->arr[right].counter > h->arr[largest].counter)
+        largest = right;
+    if (largest != index)
+    {
+        swap(&h->arr[index], &h->arr[largest]);
+        heapify(h, largest);
+    }
+    return;
+}
+int get_role_code2(char *job_role)
+{
+
+    int i;
+    if (strcmp(job_role, "CEO") == 0)
+    {
+        i = 0;
+    }
+    else if (strcmp(job_role, "CTO") == 0)
+    {
+        i = 1;
+    }
+    else if (strcmp(job_role, "VP of Engineering") == 0)
+    {
+        i = 2;
+    }
+    else if (strcmp(job_role, "Chief Architect") == 0)
+    {
+        i = 3;
+    }
+    else if (strcmp(job_role, "Technical Lead") == 0)
+    {
+        i = 4;
+    }
+    else if (strcmp(job_role, "Principal Software Engineer") == 0)
+    {
+        i = 5;
+    }
+    else if (strcmp(job_role, "Senior Software Engineer") == 0)
+    {
+        i = 6;
+    }
+    else if (strcmp(job_role, "VP of Marketing") == 0)
+    {
+        i = 7;
+    }
+    else if (strcmp(job_role, "Product Manager") == 0)
+    {
+        i = 8;
+    }
+    else if (strcmp(job_role, "HR Director") == 0)
+    {
+        i = 9;
+    }
+    else if (strcmp(job_role, "Recruiting Director") == 0)
+    {
+        i = 10;
+    }
+    return i;
+}
+// trie codes start
+trieNode *createNode()
+{
+    trieNode *nn;
+    nn = (trieNode *)malloc(sizeof(trieNode));
+    if (nn)
+    {
+        nn->isEndOfWord = false;
+        for (int i = 0; i < SIZE; i++)
+        {
+            nn->arr[i] = NULL;
+        }
+    }
+    return nn;
 }
 
-bool search(trieNode * t, char * c){
-	trieNode * p = t;
-	int len = strlen(c);
-	for(int i = 0; i < len; i++){
-		int index;
-		if(c[i]>='a' && c[i]<='z')
-		 index = c[i] - 'a';
-		else if(c[i]>='A' && c[i]<='Z')
-			index=c[i]-'A'+26;
-		else if(c[i]==' ')
-			index=52;
-		if(p -> arr[index] == NULL) return false;
-		p = p -> arr[index];
-	}
-	if(p != NULL && p -> isEndOfWord) return true;
-	else return false;
+void insert_trie(trieNode *t, char *c)
+{
+    trieNode *p = t;
+    int len = strlen(c);
+    for (int i = 0; i < len; i++)
+    {
+        int index;
+        if (c[i] >= 'a' && c[i] <= 'z')
+            index = c[i] - 'a';
+        else if (c[i] >= 'A' && c[i] <= 'Z')
+            index = c[i] - 'A' + 26;
+        else if (c[i] == ' ')
+            index = 52;
+        if (p->arr[index] == NULL)
+        {
+            p->arr[index] = createNode();
+        }
+        p = p->arr[index];
+    }
+    p->isEndOfWord = true;
+    return;
 }
 
-trieNode* fill_trie(int i){
-	trieNode* t=createNode();
-	switch(i) {
+bool search(trieNode *t, char *c)
+{
+    trieNode *p = t;
+    int len = strlen(c);
+    for (int i = 0; i < len; i++)
+    {
+        int index;
+        if (c[i] >= 'a' && c[i] <= 'z')
+            index = c[i] - 'a';
+        else if (c[i] >= 'A' && c[i] <= 'Z')
+            index = c[i] - 'A' + 26;
+        else if (c[i] == ' ')
+            index = 52;
+        if (p->arr[index] == NULL)
+            return false;
+        p = p->arr[index];
+    }
+    if (p != NULL && p->isEndOfWord)
+        return true;
+    else
+        return false;
+}
+
+trieNode *fill_trie(int i)
+{
+    trieNode *t = createNode();
+    switch (i)
+    {
     case 0: // CEO
         insert_trie(t, "Strategic Planning");
         insert_trie(t, "Leadership Development");
@@ -1100,7 +1133,7 @@ trieNode* fill_trie(int i){
         insert_trie(t, "Problem Solving");
         break;
     case 5:
-    	insert_trie(t, "Software Architecture");
+        insert_trie(t, "Software Architecture");
         insert_trie(t, "System Design");
         insert_trie(t, "Object-Oriented Programming");
         insert_trie(t, "Test-Driven Development");
@@ -1141,153 +1174,159 @@ trieNode* fill_trie(int i){
         insert_trie(t, "Employer Branding");
         insert_trie(t, "Applicant Tracking Systems");
         break;
+    }
+
+    return t;
 }
-	
+void display_role_wise(roles *r, char *check, node *root)
+{
+    int i = get_role_code2(check);
+    rolenode *p = r->vertices[i];
+    while (p)
+    {
+        findAndPrint(root, atoi(p->recptr->unique), 'a');
 
-	return t;	
-}	
-void display_role_wise(roles* r, char *check, node* root){
-	int i=get_role_code2(check);
-	rolenode* p=r->vertices[i];
-	while(p){
-		findAndPrint(root, atoi(p->recptr->unique),'a');
-		
-		p=p->next;
-	}
-
+        p = p->next;
+    }
 }
-void selection_process(node** root,node** root1, roles* r, roles* r1,char *check){
-FILE* file;
-	
-	int i=get_role_code2(check);
-	Heap a;
-	
-	initHeap(&a, r->roleid[i]);
-	trieNode* t = fill_trie(i);
-	
-	//printf("%d\n",i);
-	
-	rolenode* p=r->vertices[i];
-	//printf("%d\n", r->roleid[i]);
-	char *token;
-	int looper=1;
-	char* tempskills;
-	while(p){
-		int count=0;
-		//printf("bp\n");
-		tempskills=(char*)malloc(sizeof(char)*(strlen(p->recptr->skills)+1));
-		strcpy(tempskills, p->recptr->skills);
-		//printf("%s\n", p->recptr->skills);
-		token = strtok(tempskills, "_");	
-		//printf("%s\n", p->recptr->skills);
-		while(token!=NULL){
-		//printf("%s\n", token);
-			if(search(t, token))
-			{
+void selection_process(node **root, node **root1, roles *r, roles *r1, char *check)
+{
+    FILE *file;
 
-				count++;
-			}
-		
-			token=strtok(NULL, "_");
-		}
-		count=count+atoi(p->recptr->experience)+atoi(p->recptr->projects_num);
-		insert_heap(&a, atoi(p->recptr->unique), count, p->recptr);
-		free(tempskills);
-		p=p->next;
-		
-	}
-		//printf("vacancy check=%d\n", vacancy(check,r1));
-		//printf("Applicants for this=%d\n", r->roleid[i]);
-		int initial=(r->roleid[i]);
-while(vacancy(check,r1)!=0 && looper <= initial ){	
-	//printf("upper: %d\n", looper);
-	priority* max=Remove(&a);
-	
-	                int key;
-    char name[100], mobile[100], address[100], email[100], skills[100], experience[100], projects_num[100], unique[100], job_role[100];
-    	key=max->unique_no;
-    	strcpy(name, max->ptr->name);
-    	strcpy(mobile,max->ptr->mobile);
-    	strcpy(address,max->ptr->address);
-    	strcpy(email, max->ptr->email);
-    	strcpy(skills, max->ptr->skills);
-    	strcpy(experience, max->ptr->experience);
-    	strcpy(projects_num, max->ptr->projects_num);
-    	strcpy(unique, max->ptr->unique);
-    	strcpy(job_role, max->ptr->job_role);
-    	
-	*root1 = insert(r1, *root1, key,name, mobile, address, email, skills, experience, projects_num, unique, job_role);
-	file = fopen("employees.txt", "a+");
-	if (file == NULL)
-                {
-                    perror("Error opening file.");
-                    return ;
-                }
-	               //findAndPrint(*root1, 124, 'a');
-	fprintf(file, "%d,%s,%s,%s,%s,%s,%s,%s,%s,%s\n", key,name, mobile, address, email, skills, experience, projects_num, unique, job_role);
-                fclose(file);
-	//code for deletion
-	
-	*root = writeToFileExcludingRecord(*root, "applicants.txt", key);
+    int i = get_role_code2(check);
+    Heap a;
 
-file = fopen("applicants.txt", "a+");
-if (file == NULL)
-                {
-                    perror("Error opening file.");
-                    return ;
-                }
+    initHeap(&a, r->roleid[i]);
+    trieNode *t = fill_trie(i);
 
-    char line[1000];
-    
-		*root = NULL;
-			int i=0;
-			while(i<r->numvertices){
-                	free(r->vertices[i]);
-                	i++;
-                	}
-                	free(r->max);
-                	free(r->roleid);
-                	
-                	init_roles(r);
-                	while (fgets(line, sizeof(line), file) != NULL)
-                {
-                    sscanf(line, "%d,%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^\n]",
-                           &key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
-                    *root = insert(r,*root, key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
-                   
-                }
-	//printf("bp3\n");
-fclose(file);
-	//printf("looper=%d\t", looper);
-	//printf("roleid=%d\t", r->roleid[i]);
-	//printf("vacancy check=%d\n", vacancy(check,r1));
-	looper++;
+    // printf("%d\n",i);
+
+    rolenode *p = r->vertices[i];
+    // printf("%d\n", r->roleid[i]);
+    char *token;
+    int looper = 1;
+    char *tempskills;
+    while (p)
+    {
+        int count = 0;
+        // printf("bp\n");
+        tempskills = (char *)malloc(sizeof(char) * (strlen(p->recptr->skills) + 1));
+        strcpy(tempskills, p->recptr->skills);
+        // printf("%s\n", p->recptr->skills);
+        token = strtok(tempskills, "_");
+        // printf("%s\n", p->recptr->skills);
+        while (token != NULL)
+        {
+            // printf("%s\n", token);
+            if (search(t, token))
+            {
+
+                count++;
+            }
+
+            token = strtok(NULL, "_");
+        }
+        count = count + atoi(p->recptr->experience) + atoi(p->recptr->projects_num);
+        insert_heap(&a, atoi(p->recptr->unique), count, p->recptr);
+        free(tempskills);
+        p = p->next;
+    }
+    // printf("vacancy check=%d\n", vacancy(check,r1));
+    // printf("Applicants for this=%d\n", r->roleid[i]);
+    int initial = (r->roleid[i]);
+    while (vacancy(check, r1) != 0 && looper <= initial)
+    {
+        // printf("upper: %d\n", looper);
+        priority *max = Remove(&a);
+
+        int key;
+        char name[100], mobile[100], address[100], email[100], skills[100], experience[100], projects_num[100], unique[100], job_role[100];
+        key = max->unique_no;
+        strcpy(name, max->ptr->name);
+        strcpy(mobile, max->ptr->mobile);
+        strcpy(address, max->ptr->address);
+        strcpy(email, max->ptr->email);
+        strcpy(skills, max->ptr->skills);
+        strcpy(experience, max->ptr->experience);
+        strcpy(projects_num, max->ptr->projects_num);
+        strcpy(unique, max->ptr->unique);
+        strcpy(job_role, max->ptr->job_role);
+
+        *root1 = insert(r1, *root1, key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
+        file = fopen("employees.txt", "a+");
+        if (file == NULL)
+        {
+            perror("Error opening file.");
+            return;
+        }
+        // findAndPrint(*root1, 124, 'a');
+        fprintf(file, "%d,%s,%s,%s,%s,%s,%s,%s,%s,%s\n", key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
+        fclose(file);
+        // code for deletion
+
+        *root = writeToFileExcludingRecord(*root, "applicants.txt", key);
+
+        file = fopen("applicants.txt", "a+");
+        if (file == NULL)
+        {
+            perror("Error opening file.");
+            return;
+        }
+
+        char line[1000];
+
+        *root = NULL;
+        int i = 0;
+        while (i < r->numvertices)
+        {
+            free(r->vertices[i]);
+            i++;
+        }
+        free(r->max);
+        free(r->roleid);
+
+        init_roles(r);
+        while (fgets(line, sizeof(line), file) != NULL)
+        {
+            sscanf(line, "%d,%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^\n]",
+                   &key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
+            *root = insert(r, *root, key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
+        }
+        // printf("bp3\n");
+        fclose(file);
+        // printf("looper=%d\t", looper);
+        // printf("roleid=%d\t", r->roleid[i]);
+        // printf("vacancy check=%d\n", vacancy(check,r1));
+        looper++;
+    }
+    // printf("%d\n", looper);
+    // free(t);
 }
-//printf("%d\n", looper);
-//free(t);
-}	
-		
-void insert_role(roles** ptr, record* recptr){
-	int i;
-	
-	
-	i=get_role_code(recptr);
-	if(i==-1)return;
-	(*ptr)->roleid[i]++;
-	rolenode* p=(*ptr)->vertices[i];
-	if(!p){
-		(*ptr)->vertices[i]=create_role_node(&recptr);
-		return;
-	}
-	while(p->next){
-		p=p->next;
-	}
-	p->next=create_role_node(&recptr);
-	return;
+
+void insert_role(roles **ptr, record *recptr)
+{
+    int i;
+
+    i = get_role_code(recptr);
+    if (i == -1)
+        return;
+    (*ptr)->roleid[i]++;
+    rolenode *p = (*ptr)->vertices[i];
+    if (!p)
+    {
+        (*ptr)->vertices[i] = create_role_node(&recptr);
+        return;
+    }
+    while (p->next)
+    {
+        p = p->next;
+    }
+    p->next = create_role_node(&recptr);
+    return;
 }
-//role code ends
-	
-node *insert(roles* ptr, node *root, int key, char *name, char *mobile, char *address, char *email, char *skills, char *experience, char *projects_num, char *unique, char *job_role)
+// role code ends
+
+node *insert(roles *ptr, node *root, int key, char *name, char *mobile, char *address, char *email, char *skills, char *experience, char *projects_num, char *unique, char *job_role)
 {
     record *record_pointer = NULL;
     node *leaf = NULL;
@@ -1298,46 +1337,41 @@ node *insert(roles* ptr, node *root, int key, char *name, char *mobile, char *ad
         // Update the existing record
         // Allocate memory for each string field and copy the content
         free(record_pointer);
-      record_pointer = (record *)malloc(sizeof(record));
-    record_pointer->name = (char *)malloc(sizeof(char) * (strlen(name) + 1));
-    record_pointer->mobile = (char *)malloc(sizeof(char) * (strlen(mobile) + 1));
-    record_pointer->address = (char *)malloc(sizeof(char) * (strlen(address) + 1));
-    record_pointer->email = (char *)malloc(sizeof(char) * (strlen(email) + 1));
-    record_pointer->skills = (char *)malloc(sizeof(char) * (strlen(skills) + 1));
-    record_pointer->experience = (char *)malloc(sizeof(char) * (strlen(experience) + 1));
-    record_pointer->unique = (char *)malloc(sizeof(char) * (strlen(unique) + 1));
-    record_pointer->projects_num = (char *)malloc(sizeof(char) * (strlen(projects_num) + 1));
-    record_pointer->job_role = (char *)malloc(sizeof(char) * (strlen(job_role) + 1));
-    if (record_pointer == NULL)
-    {
-        perror("Record creation.");
-        exit(EXIT_FAILURE);
-    }
-    else
-    {
-        strcpy(record_pointer->name, name);// recordptr->name=name;
-        strcpy(record_pointer->mobile, mobile);
-        strcpy(record_pointer->address, address);
-        strcpy(record_pointer->email, email);
-        strcpy(record_pointer->skills, skills);
-        strcpy(record_pointer->experience, experience);
-        strcpy(record_pointer->projects_num, projects_num);
-        strcpy(record_pointer->unique, unique);
-        strcpy(record_pointer->job_role, job_role);
-    }
-    
+        record_pointer = (record *)malloc(sizeof(record));
+        record_pointer->name = (char *)malloc(sizeof(char) * (strlen(name) + 1));
+        record_pointer->mobile = (char *)malloc(sizeof(char) * (strlen(mobile) + 1));
+        record_pointer->address = (char *)malloc(sizeof(char) * (strlen(address) + 1));
+        record_pointer->email = (char *)malloc(sizeof(char) * (strlen(email) + 1));
+        record_pointer->skills = (char *)malloc(sizeof(char) * (strlen(skills) + 1));
+        record_pointer->experience = (char *)malloc(sizeof(char) * (strlen(experience) + 1));
+        record_pointer->unique = (char *)malloc(sizeof(char) * (strlen(unique) + 1));
+        record_pointer->projects_num = (char *)malloc(sizeof(char) * (strlen(projects_num) + 1));
+        record_pointer->job_role = (char *)malloc(sizeof(char) * (strlen(job_role) + 1));
+        if (record_pointer == NULL)
+        {
+            perror("Record creation.");
+            exit(EXIT_FAILURE);
+        }
+        else
+        {
+            strcpy(record_pointer->name, name); // recordptr->name=name;
+            strcpy(record_pointer->mobile, mobile);
+            strcpy(record_pointer->address, address);
+            strcpy(record_pointer->email, email);
+            strcpy(record_pointer->skills, skills);
+            strcpy(record_pointer->experience, experience);
+            strcpy(record_pointer->projects_num, projects_num);
+            strcpy(record_pointer->unique, unique);
+            strcpy(record_pointer->job_role, job_role);
+        }
+
         return root;
     }
 
     record_pointer = makeRecord(name, mobile, address, email, skills, experience, projects_num, unique, job_role);
-	//printf("bp1\n");
-	if(ptr==NULL){
-	//printf("here\n");
-		//init_roles(ptr);
-	//printf("here2\n");
-	}
-	insert_role(&ptr, record_pointer);
-	//printf("bp2\n");
+
+    insert_role(&ptr, record_pointer);
+    // printf("bp2\n");
     if (root == NULL)
         return startNewTree(key, record_pointer);
 
@@ -1424,19 +1458,21 @@ void destroyTree(node *root)
     free(root->pointers);
     free(root);
 }
-void sql(roles* r,roles* r1,node** root,node** root1, int operation){
-char *query;
+void sql(roles *r, roles *r1, node **root, node **root1, int operation)
+{
+    char *query;
     int c;
 
     int end = 0;
-    int first=1;
+    int first = 1;
     while (end == 0)
     {
-    	if(first==1){
-	 while ((c = getchar()) != '\n')
-            ;
-            first=0;
-           }
+        if (first == 1)
+        {
+            while ((c = getchar()) != '\n')
+                ;
+            first = 0;
+        }
         printf("Enter query:");
         query = (char *)malloc(sizeof(char) * 200);
         int k = 0;
@@ -1545,12 +1581,13 @@ char *query;
                 t->table = 21;
             }
             // printf("here:%s\n", token);
-            if (t->operation == 3 && t->star == 0 && t->assist == 4 && (t->table == 20 || t->table == 21) && t->condition == 5 && operation==2)
-            { // INSERT INTO tablename VALUES (...allValues);
-		if(operation==2 && t->table==21){
-			printf("Invalid querry\n");
-			break;
-		}
+            if (t->operation == 3 && t->star == 0 && t->assist == 4 && (t->table == 20 || t->table == 21) && t->condition == 5 && operation == 2)
+            { // INSERT INTO tablename VALUES (dhruv,1234,);
+                if (operation == 2 && t->table == 21)
+                {
+                    printf("Invalid querry\n");
+                    break;
+                }
                 char *iname = strtok(NULL, ",");
                 char *imobile = strtok(NULL, ",");
                 char *iaddress = strtok(NULL, ",");
@@ -1560,116 +1597,127 @@ char *query;
                 char *iprojects_num = strtok(NULL, ",");
                 char *iunique = strtok(NULL, ",");
                 char *ijob_role = strtok(NULL, ")");
-               	FILE* file;
-                if(t->table==20){
-                file = fopen("applicants.txt", "a+");
-                if (file == NULL)
+                FILE *file;
+                if (t->table == 20)
                 {
-                    perror("Error opening file.");
-                    return ;
+                    file = fopen("applicants.txt", "a+");
+                    if (file == NULL)
+                    {
+                        perror("Error opening file.");
+                        return;
+                    }
                 }
-                }
-                else if(t->table==21){
-                file = fopen("employees.txt", "a+");
-                if (file == NULL)
+                else if (t->table == 21)
                 {
-                    perror("Error opening file.");
-                    return ;
-                }
+                    file = fopen("employees.txt", "a+");
+                    if (file == NULL)
+                    {
+                        perror("Error opening file.");
+                        return;
+                    }
                 }
                 //    printf("reaching here?\n");
                 fprintf(file, "%d,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
                         atoi(iunique), iname, imobile, iaddress, iemail, iskills, iexperience, iprojects_num, iunique, ijob_role);
                 fclose(file);
-                if(t->table==20){
-                *root = insert(r, *root, atoi(iunique), iname, imobile, iaddress, iemail, iskills, iexperience, iprojects_num, iunique, ijob_role);
-                
-                findAndPrint(*root, atoi(iunique), 'a');
-               // printf("Vacancy:%d\n", vacancy(ijob_role, &r));
+                if (t->table == 20)
+                {
+                    *root = insert(r, *root, atoi(iunique), iname, imobile, iaddress, iemail, iskills, iexperience, iprojects_num, iunique, ijob_role);
+
+                    findAndPrint(*root, atoi(iunique), 'a');
+                    // printf("Vacancy:%d\n", vacancy(ijob_role, &r));
                 }
-                else if(t->table==21){
-                	*root1 = insert(r1, *root1, atoi(iunique), iname, imobile, iaddress, iemail, iskills, iexperience, iprojects_num, iunique, ijob_role);
-                
-                findAndPrint(*root1, atoi(iunique), 'a');
+                else if (t->table == 21)
+                {
+                    *root1 = insert(r1, *root1, atoi(iunique), iname, imobile, iaddress, iemail, iskills, iexperience, iprojects_num, iunique, ijob_role);
+
+                    findAndPrint(*root1, atoi(iunique), 'a');
                 }
                 break;
             }
 
-            else if (t->operation == 1 && t->star == 1 && t->assist == 2 && (t->table == 20 || t->table == 21) && t->condition == 9 && t->field >= 10 && t->field <= 18 && (operation==1 || operation==2))
+            else if (t->operation == 1 && t->star == 1 && t->assist == 2 && (t->table == 20 || t->table == 21) && t->condition == 9 && t->field >= 10 && t->field <= 18 && (operation == 1 || operation == 2))
             { // SELECT * FROM tablename WHERE <field> = <value> ;
-                if(t->field==17){
-                	token = strtok(NULL, " ,;=()");
-                
-                	if(t->table==20)
-                		findAndPrint(*root, atoi(token), 'a');
-                	else if(t->table==21)
-                		findAndPrint(*root1, atoi(token), 'a');
+                if (t->field == 17)
+                {
+                    token = strtok(NULL, " ,;=()");
+
+                    if (t->table == 20)
+                        findAndPrint(*root, atoi(token), 'a');
+                    else if (t->table == 21)
+                        findAndPrint(*root1, atoi(token), 'a');
                 }
-                else if(t->field==18){
-                	token = strtok(NULL, ",;=()");
-                	if(t->table==20)
-                		display_role_wise( r, token, *root);
-                	else if(t->table==21)
-                		display_role_wise(r1, token, *root1);
+                else if (t->field == 18)
+                {
+                    token = strtok(NULL, ",;=()");
+                    if (t->table == 20)
+                        display_role_wise(r, token, *root);
+                    else if (t->table == 21)
+                        display_role_wise(r1, token, *root1);
                 }
-                	
+
                 break;
             }
 
             else if (t->operation == 8 && t->star == 0 && t->assist == 2 && (t->table == 20 || t->table == 21) && t->condition == 9 &&
-                     t->field >= 10 && t->field <= 18 )
+                     t->field >= 10 && t->field <= 18)
             { // DELETE FROM tablename WHERE <field>= <value>;
                 token = strtok(NULL, " ,;=()");
-                if(t->table==20){
-                *root = writeToFileExcludingRecord(*root, "applicants.txt", atoi(token));
-                //destroyTree(*root);                
+                if (t->table == 20)
+                {
+                    *root = writeToFileExcludingRecord(*root, "applicants.txt", atoi(token));
+                    // destroyTree(*root);
                 }
-                else if(t->table==21){
-                *root1 = writeToFileExcludingRecord(*root1, "employees.txt", atoi(token));
-                //printf("bp2\n");
-                //destroyTree(*root1);
-		}
-                //printf("bp1\n");
-                FILE* file;
-                if(t->table==20)
-                file = fopen("applicants.txt", "a+");
-                else if(t->table==21)
-                file= fopen("employees.txt", "a+");
+                else if (t->table == 21)
+                {
+                    *root1 = writeToFileExcludingRecord(*root1, "employees.txt", atoi(token));
+                    // printf("bp2\n");
+                    // destroyTree(*root1);
+                }
+                // printf("bp1\n");
+                FILE *file;
+                if (t->table == 20)
+                    file = fopen("applicants.txt", "a+");
+                else if (t->table == 21)
+                    file = fopen("employees.txt", "a+");
                 if (file == NULL)
                 {
                     perror("Error opening file.");
-                    return ;
+                    return;
                 }
                 int key;
-    char name[100], mobile[100], address[100], email[100], skills[100], experience[100], projects_num[100], unique[100], job_role[100];
-    char line[1000]; 
-		if(t->table==20){
-                	*root = NULL;
-                	int i;
-                	while(i<r->numvertices){
-                	free(r->vertices[i]);
-                	i++;
-                	}
-                	free(r->max);
-                	free(r->roleid);
-                	
-                	init_roles(r);
-                	while (fgets(line, sizeof(line), file) != NULL)
+                char name[100], mobile[100], address[100], email[100], skills[100], experience[100], projects_num[100], unique[100], job_role[100];
+                char line[1000];
+                if (t->table == 20)
                 {
-                    sscanf(line, "%d,%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^\n]",
-                           &key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
-                    *root = insert(r,*root, key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
+                    *root = NULL;
+                    int i;
+                    while (i < r->numvertices)
+                    {
+                        free(r->vertices[i]);
+                        i++;
+                    }
+                    free(r->max);
+                    free(r->roleid);
+
+                    init_roles(r);
+                    while (fgets(line, sizeof(line), file) != NULL)
+                    {
+                        sscanf(line, "%d,%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^\n]",
+                               &key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
+                        *root = insert(r, *root, key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
+                    }
                 }
-                }
-                else if(t->table==21){
-                	*root1=NULL;
-                	r1=NULL;
-			while (fgets(line, sizeof(line), file) != NULL)
+                else if (t->table == 21)
                 {
-                    sscanf(line, "%d,%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^\n]",
-                           &key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
-                    *root1 = insert(r1,*root1, key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
-                }
+                    *root1 = NULL;
+                    r1 = NULL;
+                    while (fgets(line, sizeof(line), file) != NULL)
+                    {
+                        sscanf(line, "%d,%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^\n]",
+                               &key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
+                        *root1 = insert(r1, *root1, key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
+                    }
                 }
 
                 fclose(file);
@@ -1686,14 +1734,12 @@ char *query;
         while ((c = getchar()) != '\n')
             ;
     }
- 
 }
 int main()
 {
 
-
     char filename[] = "applicants.txt";
-    char filename1[]= "employees.txt";
+    char filename1[] = "employees.txt";
     FILE *file = fopen("applicants.txt", "a+");
     if (file == NULL)
     {
@@ -1706,15 +1752,14 @@ int main()
         perror("Error opening file.");
         return 1;
     }
-    
-	roles r;
-	init_roles(&r);
-	roles r1;
-	init_roles(&r1);
-	
-	
+
+    roles r;
+    init_roles(&r);
+    roles r1;
+    init_roles(&r1);
+
     node *root = NULL;
-    node *root1=NULL;
+    node *root1 = NULL;
     int key;
     char name[100], mobile[100], address[100], email[100], skills[100], experience[100], projects_num[100], unique[100], job_role[100];
     char line[1000]; // Adjust the size according to your needs
@@ -1724,18 +1769,15 @@ int main()
     {
         sscanf(line, "%d,%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^\n]",
                &key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
-        root = insert(&r,root, key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
-
+        root = insert(&r, root, key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
     }
-	while (fgets(line, sizeof(line), file1) != NULL)
+    while (fgets(line, sizeof(line), file1) != NULL)
     {
         sscanf(line, "%d,%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^,],%[^\n]",
                &key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
-        root1 = insert(&r1,root1, key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
-       
+        root1 = insert(&r1, root1, key, name, mobile, address, email, skills, experience, projects_num, unique, job_role);
     }
-    
-    
+
     fclose(file);
     fclose(file1);
     int choice;
@@ -1743,93 +1785,105 @@ int main()
     printf("1.View project documentation\n");
     printf("2. View database\n");
     printf("3. Apply for company\n");
-    do{
-    	printf("Enter your choice:\n");
+    do
+    {
+        printf("Enter your choice:\n");
         scanf("%d", &choice);
-        switch(choice){
-        	case 1: printf("You can view documentation here-->\n");
-        		break;
-        	case 2: printf("1. view query syntax documentation\n");
-        		printf("2. perform display operation\n");
-        		int choice1;
-        		do{
-        			printf("Enter your choice1:\n");
-        			scanf("%d", &choice1);
-        			if(choice1==1){
-        				printf("query syntax documentation can be viewed here\n");
-        				
-        			}
-        			else if(choice1==2){
-        				printf("Query Mode entered\n");
-        				int operation=1;
-        				sql(&r, &r1,&root, &root1, operation);
-        				printf("Query mode exited\n");
-        				
-        			}
-        		}while(choice1>=1 && choice1 <=2);
-        		break;
-        	case 3: printf("1. apply for company\n");
-        		printf("2. Check how many positions are vacant for a post\n");
-        		printf("3. Open Selection Process\n");
-        		int choice2;
-        		do{
-        			printf("enter your choice2\n");
-        			scanf("%d", &choice2);
-        			if(choice2==1){
-        				printf("Query Mode entered\n");
-        				int operation=2;
-        				sql(&r,&r1, &root, &root1, operation);
-        				printf("Query mode exited\n");
-        				
-        			}
-        			else if(choice2==2){
-        				printf("For which post do to want to check vacancy?\n");
-        				char *check=(char*)malloc(sizeof(char)*100);
-        				int i=0;
-        				int c;
-        				while ((c = getchar()) != '\n')
-            					;
-        				while((c=getchar())!='\n'){
-        					check[i++]=c;
-        				}
-        				check[i]='\0';
-        				int x=vacancy(check, &r1);
-        				if(x>0){
-        					printf("There are %d positions vacant for this position\n", x);
-        				}
-        				else printf("There are no positions vacant for this position\n");
-        				free(check);
-        			}
-        			else if(choice2==3){
-        				printf("For which post do you want to open selection process?\n");
-        				char* check=(char*)malloc(sizeof(char)*100);
-        				int i=0;
-        				int c;
-        				while ((c = getchar()) != '\n')
-            					;
-        				while((c=getchar())!='\n'){
-        					check[i++]=c;
-        				}
-        				check[i]='\0';
-        				int x=vacancy(check, &r1);
-        				if(x<=0){
-        					printf("There are no positions vacant for this position\n");
-        				}
-        				else {
+        switch (choice)
+        {
+        case 1:
+            printf("You can view documentation here-->\n");
+            break;
+        case 2:
+            printf("1. view query syntax documentation\n");
+            printf("2. perform display operation\n");
+            int choice1;
+            do
+            {
+                printf("Enter your choice1:\n");
+                scanf("%d", &choice1);
+                if (choice1 == 1)
+                {
+                    printf("query syntax documentation can be viewed here\n");
+                }
+                else if (choice1 == 2)
+                {
+                    printf("Query Mode entered\n");
+                    int operation = 1;
+                    sql(&r, &r1, &root, &root1, operation);
+                    printf("Query mode exited\n");
+                }
+            } while (choice1 >= 1 && choice1 <= 2);
+            break;
+        case 3:
+            printf("1. apply for company\n");
+            printf("2. Check how many positions are vacant for a post\n");
+            printf("3. Open Selection Process\n");
+            int choice2;
+            do
+            {
+                printf("enter your choice2\n");
+                scanf("%d", &choice2);
+                if (choice2 == 1)
+                {
+                    printf("Query Mode entered\n");
+                    int operation = 2;
+                    sql(&r, &r1, &root, &root1, operation);
+                    printf("Query mode exited\n");
+                }
+                else if (choice2 == 2)
+                {
+                    printf("For which post do to want to check vacancy?\n");
+                    char *check = (char *)malloc(sizeof(char) * 100);
+                    int i = 0;
+                    int c;
+                    while ((c = getchar()) != '\n')
+                        ;
+                    while ((c = getchar()) != '\n')
+                    {
+                        check[i++] = c;
+                    }
+                    check[i] = '\0';
+                    int x = vacancy(check, &r1);
+                    if (x > 0)
+                    {
+                        printf("There are %d positions vacant for this position\n", x);
+                    }
+                    else
+                        printf("There are no positions vacant for this position\n");
+                    free(check);
+                }
+                else if (choice2 == 3)
+                {
+                    printf("For which post do you want to open selection process?\n");
+                    char *check = (char *)malloc(sizeof(char) * 100);
+                    int i = 0;
+                    int c;
+                    while ((c = getchar()) != '\n')
+                        ;
+                    while ((c = getchar()) != '\n')
+                    {
+                        check[i++] = c;
+                    }
+                    check[i] = '\0';
+                    int x = vacancy(check, &r1);
+                    if (x <= 0)
+                    {
+                        printf("There are no positions vacant for this position\n");
+                    }
+                    else
+                    {
 
-        					selection_process(&root, &root1, &r,&r1, check);
-
-        				}
-        				free(check);
-        				
-        			}
-        		}while(choice2>=1 && choice2<=3);
-        		break;
-        	
-        	}
-    }while(choice>=1 && choice<=3);
-        printf("Code terminated\n");
-        free(root);
-	free(root1);
+                        selection_process(&root, &root1, &r, &r1, check);
+                    }
+                    free(check);
+                }
+            } while (choice2 >= 1 && choice2 <= 3);
+            break;
+        }
+    } while (choice >= 1 && choice <= 3);
+    printf("Code terminated\n");
+    free(root);
+    free(root1);
     return 0;
 }

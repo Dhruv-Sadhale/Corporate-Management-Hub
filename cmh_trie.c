@@ -103,20 +103,20 @@ trieNode *fill_trie(int i)
     case 4: // Technical Lead
         insert_trie(t, "Software Design Patterns");
         insert_trie(t, "Code Review");
-        insert_trie(t, "Mentoring/Coaching");
+        insert_trie(t, "Mentoring and Coaching");
         insert_trie(t, "Technical Documentation");
         insert_trie(t, "Problem Solving");
         break;
-    case 5:
+    case 5://Principal Software Engineer
         insert_trie(t, "Software Architecture");
         insert_trie(t, "System Design");
-        insert_trie(t, "Object-Oriented Programming");
-        insert_trie(t, "Test-Driven Development");
+        insert_trie(t, "Object Oriented Programming");
+        insert_trie(t, "Test Driven Development");
         insert_trie(t, "Debugging");
         break;
     case 6: // Senior Software Engineer
-        insert_trie(t, "Object-Oriented Programming");
-        insert_trie(t, "Test-Driven Development");
+        insert_trie(t, "Object Oriented Programming");
+        insert_trie(t, "Test Driven Development");
         insert_trie(t, "Version Control");
         insert_trie(t, "Debugging");
         insert_trie(t, "Software Optimization");

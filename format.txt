@@ -1,11 +1,25 @@
-project documentation
+1.project documentation
 
 
-view database
-	|- view documentation for database
+
+
+2. view database
+	|- view documentation for database(select * from <table> where unique=<unique>; 
+								 where job_role=<job_role>;)
+
+	If you want to view applicant's details based on unique id of applicant,type:
+		select * from applicants where unique=<unique id of applicant>;
+	For example, if applicant has a unique id = 100, then command will be:
+		select * from applicants where unique=100;
+	
+	If you want to view applicants' details based on a particular job role,type:
+		select * from applicants where job_role=<job_role>;
+	For example, if applicants to be searched has a job role of CEO, then command will be:
+		select * from applicants where job_role=CEO;
+	
 	|- view applicants and employee table
-apply for company
-	|- insert into applicants table
+3. apply for company
+	|- insert into applicants table (insert into values(........);)
 	|- check vacancy for role
 	|- if vacant, then open selection process
 		|-push those entries in heap and perform heap sort

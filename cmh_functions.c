@@ -312,7 +312,7 @@ void selection_process(node **root, node **root1, roles *r, roles *r1, char *che
         priority *max = Remove(&a);
 
         int key;
-        char name[100], mobile[100], address[100], email[100], skills[100], experience[100], projects_num[100], unique[100], job_role[100];
+        char name[100], mobile[100], address[100], email[100], skills[1000], experience[100], projects_num[100], unique[100], job_role[100];
         key = max->unique_no;
         strcpy(name, max->ptr->name);
         strcpy(mobile, max->ptr->mobile);
@@ -671,7 +671,7 @@ void sql(roles *r, roles *r1, node **root, node **root1, int operation)
                     return;
                 }
                 int key;
-                char name[100], mobile[100], address[100], email[100], skills[100], experience[100], projects_num[100], unique[100], job_role[100];
+                char name[100], mobile[100], address[100], email[100], skills[1000], experience[100], projects_num[100], unique[100], job_role[100];
                 char line[1000];
                 if (t->table == 20)
                 {
@@ -714,7 +714,7 @@ void sql(roles *r, roles *r1, node **root, node **root1, int operation)
         free(t);
         free(query);
 
-        printf("Do you want to terminate session? Enter 0 for no and enter 1 for yes:");
+        printf("Do you wish to exit query mode? Enter 0 for no and enter 1 for yes:\n");
         scanf("%d", &end);
         while ((c = getchar()) != '\n')
             ;

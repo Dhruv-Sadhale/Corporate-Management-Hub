@@ -4,7 +4,7 @@
 #define NumSkills
 
 // Default order
-#define ORDER 3
+#define ORDER 5
 #define ROLE_SIZE 11
 typedef struct record
 {

@@ -1,0 +1,24 @@
+perror
+sscanf
+verbose
+to do: update insert function for rec_ptr !=NULL directly call makeRecord()
+
+
+
+scanning files
+
+
+B+  insertion
+
+findand print and other functions
+sql()
+
+
+
+selection_process()
+
+trie
+
+
+
+heap
