@@ -15,3 +15,5 @@
 201,neil sadhale,989902321,ravi park,neil@gmail.com,Software Architecture_System Design_,10,10,201,VP of Engineering
 200,dhruv,1234567890,ravi park,dhruv.sadhale@gmail.com,Continuous Integration or Continuous Deployment_else_,10,10,200,VP of Engineering
 200,dhruv,1234567890,ravi park,dhruv.sadhale@gmail.com,Continuous Integration or Continuous Deployment_Technical Sponsorship_,10,10,200,VP of Engineering
+202,x,123456789,ravi park,x@gmail.com,Continuous Integration or Continuous Deployment_Technical Leadership_x_Software Architecture_,10,10,202,VP of Engineering
+205,seema sadhale,1234567890,ravipark,seema@gmail.com,Cloud Computing_Software Architecture_x_Team Leadership_Technology Innovation_,9,8,205,CTO

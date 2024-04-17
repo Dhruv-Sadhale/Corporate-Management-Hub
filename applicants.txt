@@ -15,3 +15,4 @@
 144,James Carter,2223334444,963 Fir St,james.carter@example.com,Strategic Planning_Leadership Development_Financial Management_Decision Making_Public Speaking_,6,3,144,CEO
 147,William Wright,1112223333,456 Elm St,william.wright@example.com,Talent Acquisition_Employee Relations_Performance Management_Diversity and Inclusion_HR Compliance_,5,3,147,HR Director
 149,Aiden Walker,7778889999,987 Walnut St,aiden.walker@example.com,Digital Marketing Strategy_Brand Management_Market Research_Campaign Management_Content Marketing_,6,3,149,VP of Marketing
+206,jagdeep sadhale, 1029384756,ravi park,jagdeep@gmail.com,Technology Innovation_Project Management_x_y_u_z,8,10,206,CTO

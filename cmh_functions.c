@@ -456,7 +456,7 @@ void sql(roles *r, roles *r1, node **root, node **root1, int operation)
             first = 0;
         }
         printf("Enter query:");
-        query = (char *)malloc(sizeof(char) * 200);
+        query = (char *)malloc(sizeof(char) * 1000);
         int k = 0;
 
         while ((c = getchar()) != ';')
@@ -574,7 +574,9 @@ void sql(roles *r, roles *r1, node **root, node **root1, int operation)
                 char *imobile = strtok(NULL, ",");
                 char *iaddress = strtok(NULL, ",");
                 char *iemail = strtok(NULL, ",");
+                printf("seg dault?\n");
                 char *iskills = strtok(NULL, ",");
+                printf("seg dault2?\n");
                 char *iexperience = strtok(NULL, ",");
                 char *iprojects_num = strtok(NULL, ",");
                 char *iunique = strtok(NULL, ",");
@@ -598,7 +600,7 @@ void sql(roles *r, roles *r1, node **root, node **root1, int operation)
                         return;
                     }
                 }
-                //    printf("reaching here?\n");
+                   printf("reaching here?\n");
                 fprintf(file, "%d,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
                         atoi(iunique), iname, imobile, iaddress, iemail, iskills, iexperience, iprojects_num, iunique, ijob_role);
                 fclose(file);
